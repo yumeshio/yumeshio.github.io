@@ -1,0 +1,25 @@
+@import 'tailwindcss';
+@import '@nuxt/ui';
+
+:root {
+	--ui-container: var(--container-3xl);
+}
+
+@layer components {
+	.blog-post {
+		& h1 {
+			@apply font-bold text-center mb-4;
+		}
+		& p {
+			@apply mb-2;
+		}
+	}
+	.diary-content {
+		& h1 {
+			@apply hidden;
+		}
+		& p {
+			@apply mb-2;
+		}
+	}
+}
