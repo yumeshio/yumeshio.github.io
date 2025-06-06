@@ -5,7 +5,7 @@ const today = new Date()
 const placeholder = shallowRef(
 	new CalendarDate(today.getFullYear(), today.getMonth() + 1, today.getDate()),
 )
-const selectedDate = shallowRef(placeholder.value)
+const selectedDate = shallowRef()
 if (route.query.date && typeof route.query.date === 'string') {
 	const parts = route.query.date.split('-')
 	selectedDate.value = new CalendarDate(
@@ -28,7 +28,10 @@ const { data } = await useAsyncData('diary-list', () => {
 const isDateDisabled = (date: DateValue) => {
 	return !data.value?.find((d) => d.date == date.toString())
 }
-const { data: diaryData } = await useAsyncData('diary-content', () => {
+const { data: diaryData } = await useAsyncData('diary-content', async () => {
+	if (!selectedDate.value) {
+		return Promise.resolve(null)
+	}
 	return queryCollection('diary')
 		.where('date', '=', selectedDate.value.toString())
 		.first()
@@ -54,7 +57,7 @@ watch(placeholder, async (newValue, oldValue) => {
 		class="w-fit mx-auto mb-4 md:mb-6"
 	/>
 	<UContainer>
-		<h1 class="text-center font-bold">
+		<h1 v-if="selectedDate" class="text-center font-bold">
 			{{ $d(selectedDate.toDate('JST'), 'long') }}
 		</h1>
 		<ContentRenderer
