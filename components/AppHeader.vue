@@ -69,7 +69,7 @@ watch(viewport.breakpoint, () => {
 </script>
 
 <template>
-	<UCollapsible v-model:open="open" class="flex flex-col mb-4 sm:mb-6">
+	<UCollapsible v-model:open="open" class="flex flex-col mb-4 sm:mb-6 lg:mb-8">
 		<div
 			class="px-4 sm:px-6 lg:px-8 py-2 sm:py-4 flex justify-between sm:justify-center bg-muted sm:bg-inherit pointer-events-none"
 		>
