@@ -31,6 +31,7 @@ export default defineNuxtConfig({
 		},
 	},
 	i18n: {
+		baseUrl: '/',
 		defaultLocale: 'ja',
 		locales: [
 			{
@@ -42,17 +43,10 @@ export default defineNuxtConfig({
 		],
 	},
 	icon: {
+		serverBundle: false,
 		clientBundle: {
-			scan: {
-				// note that when you specify those values, the default behavior will be overridden
-				globInclude: [
-					'components/**/*.vue',
-					'layouts/**/*.vue',
-					'pages/**/*.vue',
-					'app.vue',
-				],
-				globExclude: ['node_modules', 'dist', '.nuxt', '.output', '.data'],
-			},
+			// icons: ['i-lucide-house', 'i-lucide-book', 'lucide:align-justify'],
+			scan: true,
 		},
 	},
 })
