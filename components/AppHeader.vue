@@ -57,6 +57,14 @@ const items = computed((): NavigationMenuItem[] => [
 		}),
 		active: route.path.includes('/blog') && hasTag(route.query, 'game'),
 	},
+	{
+		label: t('library'),
+		icon: 'i-lucide-book',
+		class: 'px-4 sm:px-2.5',
+		to: resolve({
+			path: '/library',
+		}),
+	},
 ])
 const open = ref<boolean>(false)
 watch(viewport.breakpoint, () => {

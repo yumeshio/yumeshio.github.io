@@ -17,5 +17,22 @@ export default defineContentConfig({
 				date: z.string(),
 			}),
 		}),
+		library: defineCollection({
+			type: 'data',
+			source: 'library/**/*.json',
+			schema: z.object({
+				title: z.string(),
+				releaseDate: z.string().optional(),
+				purchaseDate: z.string().optional(),
+				startDate: z.string().optional(),
+				completeDate: z.string().optional(),
+				tags: z.array(z.string()).optional(),
+				images: z.array(z.string()).optional(),
+				status: z
+					.enum(['wishlist', 'unstarted', 'ongoing', 'completed'])
+					.optional(),
+				link: z.string().optional(),
+			}),
+		}),
 	},
 })
