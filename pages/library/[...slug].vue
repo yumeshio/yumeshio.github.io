@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<h1>{{ $t('library') }}</h1>
-		<UModal v-model:open="isModalOpen" :title="$t('filter')">
-			<UButton :label="$t('filter')" color="neutral" variant="subtle" />
+		<UModal v-model:open="isModalOpen" :title="t('filter')">
+			<UButton :label="t('filter')" color="neutral" variant="subtle" />
 			<template #body>
 				<UTabs
 					:default-value="getActiveTab()"
@@ -19,26 +19,29 @@
 							:schema="schema"
 							@submit="onSubmit($event, item.value)"
 						>
-							<UFormField :label="$t('status')">
+							<UFormField :label="t('status')">
 								<USelect
 									v-model="condition.status"
 									:items="statusList"
 									class="w-full"
 								/>
 							</UFormField>
-							<UButton type="submit" :label="$t('filter')" />
+							<UButton type="submit" :label="t('filter')" />
 						</UForm>
 					</template>
 				</UTabs>
 			</template>
 		</UModal>
 		<div
-			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 px-4 sm:px-6 lg:px-8 w-fit mx-auto"
+			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
 		>
 			<UCard
 				v-for="record in records"
 				:key="record.id"
-				class="max-w-sm relative overflow-hidden"
+				class="relative overflow-hidden aspect-[3/4]"
+				:ui="{
+					body: 'p-0 sm:p-0 h-full',
+				}"
 			>
 				<UCollapsible
 					:ui="{
@@ -73,10 +76,18 @@
 						</div>
 					</template>
 				</UCollapsible>
-				<UCarousel v-slot="{ item }" :items="record.images" class="z-0">
-					<img :src="item" class="rounded-lg" />
+				<UCarousel
+					v-slot="{ item }"
+					:items="record.images"
+					class="z-0 w-full h-full bg-inverted flex items-stretch"
+					:ui="{
+						container: 'h-full',
+						item: 'relative h-full',
+					}"
+				>
+					<img :src="item" class="object-contain h-full w-full" />
 				</UCarousel>
-				<h2 class="font-bold text-center">{{ record.title }}</h2>
+				<h2 class="font-bold text-center hidden">{{ record.title }}</h2>
 			</UCard>
 		</div>
 	</div>
@@ -84,6 +95,10 @@
 <script setup lang="ts">
 import type { TabsItem, FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
+
+const { t } = useI18n({
+	useScope: 'local',
+})
 
 const tabs: (Omit<TabsItem, 'value'> & { value: string })[] = [
 	{
@@ -127,11 +142,11 @@ const getActiveTab = () => {
 }
 
 const statusList = ref([
-	{ label: '未着手', value: 'unstarted' },
-	{ label: '進行中', value: 'ongoing' },
-	{ label: '完了', value: 'completed' },
-	{ label: '積み', value: 'wishlist' },
-	{ label: 'すべて', value: 'all' },
+	{ label: t('unstarted'), value: 'unstarted' },
+	{ label: t('ongoing'), value: 'ongoing' },
+	{ label: t('completed'), value: 'completed' },
+	{ label: t('wishlist'), value: 'wishlist' },
+	{ label: t('all'), value: 'all' },
 ])
 
 const schema = z.object({
@@ -178,3 +193,18 @@ const records = computed(() => {
 	return data.data.value || []
 })
 </script>
+
+<i18n lang="json">
+{
+	"ja": {
+		"library": "ライブラリ",
+		"filter": "絞り込み",
+		"status": "ステータス",
+		"ongoing": "進行中",
+		"completed": "完了",
+		"unstarted": "未着手",
+		"wishlist": "積み",
+		"all": "すべて"
+	}
+}
+</i18n>
