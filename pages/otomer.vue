@@ -38,24 +38,26 @@ const saveData = reactive<SaveData>({
 	items: [],
 })
 
-const saveModalState = reactive({
-	total: 0,
-	cols: 1,
-	rows: 0,
-})
+const totalSaves = ref(0)
+const saveCols = ref(1)
+const saveRows = ref(0)
 
 const savesPerPage = computed(() => {
-	if (saveModalState.rows > 0) {
-		return saveModalState.cols * saveModalState.rows
+	if (saveRows.value > 0) {
+		return saveCols.value * saveRows.value
 	}
-	return saveModalState.total
+	return totalSaves.value
 })
 
-const page = ref(0)
+const page = ref(1)
+const totalPages = computed(() => {
+	if (totalSaves.value < 1) return 1
+	return Math.ceil(totalSaves.value / savesPerPage.value)
+})
 
-watch(saveModalState, () => {
-	if (saveData.items.length < saveModalState.total) {
-		saveData.items.push(...Array(saveModalState.total - saveData.items.length))
+watch(totalSaves, () => {
+	if (saveData.items.length < totalSaves.value) {
+		saveData.items.push(...Array(totalSaves.value - saveData.items.length))
 	}
 })
 
@@ -149,6 +151,16 @@ const handleLoadItem = (item: ChoiceItem) => {
 }
 const itemModalOpen = ref(false)
 const allItemsModalOpen = ref(false)
+const saveModalOpen = ref(false)
+
+const handleLoadSave = (saveItem: SaveItem) => {
+	items.value = saveItem.items.map((item) => ({
+		choices: item.choices,
+		selectedChoice: item.selectedChoice,
+		description: item.description,
+	}))
+	saveModalOpen.value = false
+}
 </script>
 
 <template>
@@ -278,33 +290,33 @@ const allItemsModalOpen = ref(false)
 			</UForm>
 		</template>
 	</UModal>
-	<UModal>
+	<UModal v-model:open="saveModalOpen">
 		<UButton label="Save / Load" />
 		<template #header>
 			<UFormField label="Total Saves" name="total">
 				<UInputNumber
-					v-model="saveModalState.total"
+					v-model="totalSaves"
 					placeholder="Total Saves"
 					class="w-32"
 				/>
 			</UFormField>
 			<UFormField label="Cols" name="cols">
-				<UInputNumber v-model="saveModalState.cols" class="w-32" />
+				<UInputNumber v-model="saveCols" class="w-32" />
 			</UFormField>
 			<UFormField label="Rows" name="rows">
-				<UInputNumber v-model="saveModalState.rows" class="w-32" />
+				<UInputNumber v-model="saveRows" class="w-32" />
 			</UFormField>
 		</template>
 		<template #body>
 			{{ saveData }}
 			<div
 				class="grid"
-				:style="{ gridTemplateColumns: `repeat(${saveModalState.cols}, 1fr)` }"
+				:style="{ gridTemplateColumns: `repeat(${saveCols}, 1fr)` }"
 			>
 				<UCard
 					v-for="(saveItem, index) in saveData.items.slice(
+						(page - 1) * savesPerPage,
 						page * savesPerPage,
-						(page + 1) * savesPerPage,
 					)"
 					:key="index"
 					:ui="{
@@ -318,6 +330,7 @@ const allItemsModalOpen = ref(false)
 					</p>
 					<template #footer>
 						<UButton
+							v-if="saveItem"
 							label="Delete"
 							trailing-icon="i-lucide-trash"
 							color="neutral"
@@ -326,21 +339,31 @@ const allItemsModalOpen = ref(false)
 							@click="saveData.items[index] = undefined"
 						/>
 						<UButton
+							v-if="saveItem"
 							label="Load"
 							trailing-icon="i-lucide-edit"
 							size="xs"
 							class="ml-2"
+							@click="handleLoadSave(saveItem)"
+						/>
+						<UButton
+							label="Save"
+							class="mt-2 flex ml-auto"
+							trailing-icon="i-lucide-save"
+							@click="
+								saveData.items[index] = {
+									items: items.map((item) => ({ ...item })),
+								}
+							"
 						/>
 					</template>
 				</UCard>
 			</div>
-			<UButton
-				label="Save Current Items"
-				class="mt-2 flex ml-auto"
-				trailing-icon="i-lucide-save"
-				@click="
-					saveData.items.push({ items: items.map((item) => ({ ...item })) })
-				"
+			{{ totalPages }}
+			<UPagination
+				v-model:page="page"
+				:total="totalSaves"
+				:items-per-page="savesPerPage"
 			/>
 		</template>
 	</UModal>
