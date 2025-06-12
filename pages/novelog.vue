@@ -4,20 +4,18 @@ import * as z from 'zod'
 
 const schema = z.object({
 	description: z.string().optional(),
-	choices: z
-		.array(z.string().min(1, 'Choice cannot be empty'))
-		.min(1, 'At least one choice is required'),
+	choices: z.array(z.string()),
 	selectedChoice: z.number().int(),
-	activeItem: z.number().int().optional(),
+	activeItem: z.number().int(),
 })
 
 type Schema = z.output<typeof schema>
 
-const state = reactive<Partial<Schema>>({
+const state = reactive<Schema>({
 	description: '',
 	choices: [''],
 	selectedChoice: -1,
-	activeItem: undefined,
+	activeItem: -1,
 })
 
 type ChoiceItem = {
@@ -91,12 +89,16 @@ const allItems = ref<Omit<ChoiceItem, 'selectedChoice'>[]>([
 	},
 ])
 
-const handleAddItem = (activeItem?: number) => {
+const handleAddItem = (activeItem: number) => {
 	itemModalOpen.value = true
 	state.activeItem = activeItem
-	if (activeItem !== undefined) {
+	if (activeItem >= 0) {
 		state.description = items.value[activeItem].description
-		state.choices = items.value[activeItem].choices
+		if (items.value[activeItem].choices.length === 0) {
+			state.choices = ['']
+		} else {
+			state.choices = [...items.value[activeItem].choices]
+		}
 		state.selectedChoice = items.value[activeItem].selectedChoice
 	} else {
 		state.description = ''
@@ -107,16 +109,16 @@ const handleAddItem = (activeItem?: number) => {
 
 const handleSubmit = (event: FormSubmitEvent<Schema>) => {
 	const newItem: ChoiceItem = {
-		choices: state.choices!,
+		choices: state.choices.filter((choice) => choice.trim() !== ''),
 		selectedChoice: state.selectedChoice!,
 		description: state.description!,
 	}
-	if (state.activeItem !== undefined) {
+	if (state.activeItem >= 0) {
 		const existingItemIndex = allItems.value.findIndex(
 			(item) =>
-				item.choices.length === items.value[state.activeItem!].choices.length &&
+				item.choices.length === items.value[state.activeItem].choices.length &&
 				item.choices.every((choice: string) =>
-					items.value[state.activeItem!].choices.includes(choice),
+					items.value[state.activeItem].choices.includes(choice),
 				),
 		)
 		if (existingItemIndex !== -1) {
@@ -215,7 +217,6 @@ onMounted(() => {
 		:ui="{
 			title: 'text-muted',
 			date: 'float-end ms-1',
-			description: 'px-3 py-2 ring ring-default mt-2 rounded-md text-default',
 		}"
 	>
 		<template #indicator="{ item }">
@@ -289,39 +290,39 @@ onMounted(() => {
 						class="mb-2 bg-default text-default border border-default"
 					>
 						<p>
+							No.{{ index + 1 }} ({{ page }} - {{ (index % savesPerPage) + 1 }})
+						</p>
+						<p>
 							{{
 								saveItem?.items[saveItem.items.length - 1].choices.join(' / ')
 							}}
 						</p>
-						<template #footer>
-							<UButton
-								v-if="saveItem"
-								label="Delete"
-								trailing-icon="i-lucide-trash"
-								color="neutral"
-								size="xs"
-								class="ml-auto"
-								@click="saveData.items[index] = undefined"
-							/>
+						<div class="flex flex-wrap gap-2 mt-2">
 							<UButton
 								v-if="saveItem"
 								label="Load"
 								trailing-icon="i-lucide-edit"
-								size="xs"
-								class="ml-2"
 								@click="handleLoadSave(saveItem)"
 							/>
 							<UButton
 								label="Save"
-								class="mt-2 flex ml-auto"
 								trailing-icon="i-lucide-save"
+								variant="outline"
 								@click="
 									saveData.items[index] = {
 										items: items.map((item) => ({ ...item })),
 									}
 								"
 							/>
-						</template>
+							<UButton
+								v-if="saveItem"
+								label="Delete"
+								variant="outline"
+								trailing-icon="i-lucide-trash"
+								color="warning"
+								@click="saveData.items[index] = undefined"
+							/>
+						</div>
 					</UCard>
 				</div>
 				<UPagination
@@ -337,9 +338,9 @@ onMounted(() => {
 		</UModal>
 		<UModal
 			v-model:open="itemModalOpen"
-			:title="state.activeItem !== undefined ? 'Edit Item' : 'Add Item'"
+			:title="state.activeItem >= 0 ? 'Edit Item' : 'Add Item'"
 		>
-			<UButton label="Add Item" @click="handleAddItem()" />
+			<UButton label="Add Item" @click="handleAddItem(-1)" />
 			<template #body>
 				<UForm :schema="schema" :state="state" @submit="handleSubmit">
 					<UFormField name="description" label="Description">
@@ -430,7 +431,7 @@ onMounted(() => {
 							label="Delete"
 							class="ml-auto"
 							color="warning"
-							@click="handleDeleteItem(state.activeItem!)"
+							@click="handleDeleteItem(state.activeItem)"
 						/>
 						<UButton type="submit" label="Submit" class="ml-2" />
 					</div>
