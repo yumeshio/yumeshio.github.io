@@ -290,27 +290,26 @@ const handleLoadSave = (saveItem: SaveItem) => {
 			</UForm>
 		</template>
 	</UModal>
-	<UModal v-model:open="saveModalOpen">
+	<UModal v-model:open="saveModalOpen" title="Save / Load">
 		<UButton label="Save / Load" />
-		<template #header>
-			<UFormField label="Total Saves" name="total">
-				<UInputNumber
-					v-model="totalSaves"
-					placeholder="Total Saves"
-					class="w-32"
-				/>
-			</UFormField>
-			<UFormField label="Cols" name="cols">
-				<UInputNumber v-model="saveCols" class="w-32" />
-			</UFormField>
-			<UFormField label="Rows" name="rows">
-				<UInputNumber v-model="saveRows" class="w-32" />
-			</UFormField>
-		</template>
 		<template #body>
-			{{ saveData }}
+			<div class="flex">
+				<UFormField label="Total Saves" name="total">
+					<UInputNumber
+						v-model="totalSaves"
+						placeholder="Total Saves"
+						class="w-32"
+					/>
+				</UFormField>
+				<UFormField label="Cols" name="cols">
+					<UInputNumber v-model="saveCols" class="w-32" />
+				</UFormField>
+				<UFormField label="Rows" name="rows">
+					<UInputNumber v-model="saveRows" class="w-32" />
+				</UFormField>
+			</div>
 			<div
-				class="grid"
+				class="grid gap-4"
 				:style="{ gridTemplateColumns: `repeat(${saveCols}, 1fr)` }"
 			>
 				<UCard
@@ -359,7 +358,6 @@ const handleLoadSave = (saveItem: SaveItem) => {
 					</template>
 				</UCard>
 			</div>
-			{{ totalPages }}
 			<UPagination
 				v-model:page="page"
 				:total="totalSaves"
