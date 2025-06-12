@@ -38,6 +38,16 @@ const saveData = reactive<SaveData>({
 	items: [],
 })
 
+watch(
+	saveData,
+	(newData) => {
+		localStorage.setItem('novelog-save-data', JSON.stringify(newData))
+		localStorage.setItem('novelog-save-cols', JSON.stringify(saveCols.value))
+		localStorage.setItem('novelog-save-rows', JSON.stringify(saveRows.value))
+	},
+	{ deep: true },
+)
+
 const totalSaves = ref(0)
 const saveCols = ref(1)
 const saveRows = ref(0)
@@ -50,10 +60,6 @@ const savesPerPage = computed(() => {
 })
 
 const page = ref(1)
-const totalPages = computed(() => {
-	if (totalSaves.value < 1) return 1
-	return Math.ceil(totalSaves.value / savesPerPage.value)
-})
 
 watch(totalSaves, () => {
 	if (saveData.items.length < totalSaves.value) {
@@ -142,9 +148,22 @@ const handleSubmit = (event: FormSubmitEvent<Schema>) => {
 		}
 	}
 	itemModalOpen.value = false
+	localStorage.setItem('novelog-items', JSON.stringify(items.value))
+	localStorage.setItem('novelog-all-items', JSON.stringify(allItems.value))
 }
 
-const handleLoadItem = (item: ChoiceItem) => {
+const handleDeleteItem = (index: number) => {
+	items.value.splice(index, 1)
+	itemModalOpen.value = false
+	localStorage.setItem('novelog-items', JSON.stringify(items.value))
+}
+
+const handleDeleteItemFromAllItems = (index: number) => {
+	allItems.value.splice(index, 1)
+	localStorage.setItem('novelog-all-items', JSON.stringify(allItems.value))
+}
+
+const handleLoadItem = (item: Omit<ChoiceItem, 'selectedChoice'>) => {
 	state.description = item.description
 	state.choices = item.choices
 	allItemsModalOpen.value = false
@@ -160,7 +179,32 @@ const handleLoadSave = (saveItem: SaveItem) => {
 		description: item.description,
 	}))
 	saveModalOpen.value = false
+	localStorage.setItem('novelog-items', JSON.stringify(items.value))
 }
+
+onMounted(() => {
+	const localSaveData = localStorage.getItem('novelog-save-data')
+	if (localSaveData) {
+		Object.assign(saveData, JSON.parse(localSaveData))
+		totalSaves.value = saveData.items.length
+	}
+	const localCols = localStorage.getItem('novelog-save-cols')
+	if (localCols) {
+		saveCols.value = JSON.parse(localCols)
+	}
+	const localRows = localStorage.getItem('novelog-save-rows')
+	if (localRows) {
+		saveRows.value = JSON.parse(localRows)
+	}
+	const localItems = localStorage.getItem('novelog-items')
+	if (localItems) {
+		items.value = JSON.parse(localItems)
+	}
+	const localAllItems = localStorage.getItem('novelog-all-items')
+	if (localAllItems) {
+		allItems.value = JSON.parse(localAllItems)
+	}
+})
 </script>
 
 <template>
@@ -272,7 +316,7 @@ const handleLoadSave = (saveItem: SaveItem) => {
 										color="neutral"
 										size="xs"
 										class="ml-auto"
-										@click="allItems.splice(index, 1)"
+										@click="handleDeleteItemFromAllItems(index)"
 									/>
 									<UButton
 										label="Load"
@@ -285,6 +329,10 @@ const handleLoadSave = (saveItem: SaveItem) => {
 							</UCard>
 						</template>
 					</UModal>
+					<UButton
+						label="Delete"
+						@click="handleDeleteItem(state.activeItem!)"
+					/>
 					<UButton type="submit" label="Submit" />
 				</div>
 			</UForm>
