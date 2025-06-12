@@ -221,9 +221,14 @@ onMounted(() => {
 	>
 		<template #indicator="{ item }">
 			<UButton
-				trailing-icon="i-lucide-edit"
-				size="xs"
+				:trailing-icon="
+					item.choices.length > 0
+						? 'i-lucide-message-circle-question'
+						: 'i-lucide-message-circle-more'
+				"
 				class="rounded-full"
+				color="neutral"
+				variant="soft"
 				@click="handleAddItem(items.indexOf(item))"
 			/>
 		</template>
@@ -251,7 +256,12 @@ onMounted(() => {
 						variant="soft"
 						color="neutral"
 						leading-icon="i-lucide-settings"
-						class="w-full"
+						trailing-icon="i-lucide-chevron-down"
+						class="w-full group"
+						:ui="{
+							trailingIcon:
+								'ml-auto group-data-[state=open]:rotate-180 transition-transform duration-200',
+						}"
 					/>
 					<template #content>
 						<div
