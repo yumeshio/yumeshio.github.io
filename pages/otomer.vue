@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { TimelineItem, FormSubmitEvent } from '@nuxt/ui'
+import type { FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
 const schema = z.object({
@@ -15,12 +15,51 @@ type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
 	description: '',
-	choices: ['A', 'B', 'C'],
-	selectedChoice: 0,
-	activeItem: 0,
+	choices: [''],
+	selectedChoice: -1,
+	activeItem: undefined,
 })
 
-const items = ref<TimelineItem[]>([
+type ChoiceItem = {
+	choices: string[]
+	selectedChoice: number
+	description: string
+}
+
+type SaveItem = {
+	items: ChoiceItem[]
+}
+
+type SaveData = {
+	items: (SaveItem | undefined)[]
+}
+
+const saveData = reactive<SaveData>({
+	items: [],
+})
+
+const saveModalState = reactive({
+	total: 0,
+	cols: 1,
+	rows: 0,
+})
+
+const savesPerPage = computed(() => {
+	if (saveModalState.rows > 0) {
+		return saveModalState.cols * saveModalState.rows
+	}
+	return saveModalState.total
+})
+
+const page = ref(0)
+
+watch(saveModalState, () => {
+	if (saveData.items.length < saveModalState.total) {
+		saveData.items.push(...Array(saveModalState.total - saveData.items.length))
+	}
+})
+
+const items = ref<ChoiceItem[]>([
 	{
 		choices: ['A', 'B', 'C'],
 		selectedChoice: 0,
@@ -33,7 +72,7 @@ const items = ref<TimelineItem[]>([
 	},
 ])
 
-const allItems = ref<TimelineItem[]>([
+const allItems = ref<Omit<ChoiceItem, 'selectedChoice'>[]>([
 	{
 		choices: ['A', 'B', 'C'],
 		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -54,15 +93,15 @@ const handleAddItem = (activeItem?: number) => {
 	} else {
 		state.description = ''
 		state.choices = ['']
-		state.selectedChoice = 0
+		state.selectedChoice = -1
 	}
 }
 
 const handleSubmit = (event: FormSubmitEvent<Schema>) => {
-	const newItem: TimelineItem = {
-		choices: state.choices,
-		selectedChoice: state.selectedChoice,
-		description: state.description,
+	const newItem: ChoiceItem = {
+		choices: state.choices!,
+		selectedChoice: state.selectedChoice!,
+		description: state.description!,
 	}
 	if (state.activeItem !== undefined) {
 		const existingItemIndex = allItems.value.findIndex(
@@ -103,7 +142,7 @@ const handleSubmit = (event: FormSubmitEvent<Schema>) => {
 	itemModalOpen.value = false
 }
 
-const handleLoadItem = (item: TimelineItem) => {
+const handleLoadItem = (item: ChoiceItem) => {
 	state.description = item.description
 	state.choices = item.choices
 	allItemsModalOpen.value = false
@@ -119,6 +158,7 @@ const allItemsModalOpen = ref(false)
 		size="xs"
 		class="w-96 mx-auto"
 		:ui="{
+			title: 'text-muted',
 			date: 'float-end ms-1',
 			description: 'px-3 py-2 ring ring-default mt-2 rounded-md text-default',
 		}"
@@ -132,7 +172,16 @@ const allItemsModalOpen = ref(false)
 			/>
 		</template>
 		<template #title="{ item }">
-			{{ item.choices[item.selectedChoice] }}
+			<template v-for="(choice, i) in item.choices" :key="i">
+				<span
+					:class="{
+						'font-bold': item.selectedChoice === i,
+						'text-default': item.selectedChoice === i,
+					}"
+					>{{ choice }}</span
+				>
+				<template v-if="i < item.choices.length - 1"> / </template>
+			</template>
 		</template>
 	</UTimeline>
 
@@ -166,7 +215,11 @@ const allItemsModalOpen = ref(false)
 							variant="outline"
 							size="xs"
 							class="ml-2 rounded-full size-6 items-center justify-center"
-							@click="state.selectedChoice = index"
+							@click="
+								state.selectedChoice === index
+									? (state.selectedChoice = -1)
+									: (state.selectedChoice = index)
+							"
 						/>
 						<UButton
 							v-if="state.choices!.length > 1"
@@ -223,6 +276,72 @@ const allItemsModalOpen = ref(false)
 					<UButton type="submit" label="Submit" />
 				</div>
 			</UForm>
+		</template>
+	</UModal>
+	<UModal>
+		<UButton label="Save / Load" />
+		<template #header>
+			<UFormField label="Total Saves" name="total">
+				<UInputNumber
+					v-model="saveModalState.total"
+					placeholder="Total Saves"
+					class="w-32"
+				/>
+			</UFormField>
+			<UFormField label="Cols" name="cols">
+				<UInputNumber v-model="saveModalState.cols" class="w-32" />
+			</UFormField>
+			<UFormField label="Rows" name="rows">
+				<UInputNumber v-model="saveModalState.rows" class="w-32" />
+			</UFormField>
+		</template>
+		<template #body>
+			{{ saveData }}
+			<div
+				class="grid"
+				:style="{ gridTemplateColumns: `repeat(${saveModalState.cols}, 1fr)` }"
+			>
+				<UCard
+					v-for="(saveItem, index) in saveData.items.slice(
+						page * savesPerPage,
+						(page + 1) * savesPerPage,
+					)"
+					:key="index"
+					:ui="{
+						footer: 'px-4 sm:px-6 pb-4 sm:pb-6 pt-0 sm:pt-0 flex justify-end',
+					}"
+					variant="solid"
+					class="mb-2 bg-default text-default border border-default"
+				>
+					<p>
+						{{ saveItem?.items[saveItem.items.length - 1].choices.join(' / ') }}
+					</p>
+					<template #footer>
+						<UButton
+							label="Delete"
+							trailing-icon="i-lucide-trash"
+							color="neutral"
+							size="xs"
+							class="ml-auto"
+							@click="saveData.items[index] = undefined"
+						/>
+						<UButton
+							label="Load"
+							trailing-icon="i-lucide-edit"
+							size="xs"
+							class="ml-2"
+						/>
+					</template>
+				</UCard>
+			</div>
+			<UButton
+				label="Save Current Items"
+				class="mt-2 flex ml-auto"
+				trailing-icon="i-lucide-save"
+				@click="
+					saveData.items.push({ items: items.map((item) => ({ ...item })) })
+				"
+			/>
 		</template>
 	</UModal>
 </template>
