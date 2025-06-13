@@ -304,7 +304,7 @@ const importDataFromJson = async () => {
 					class="basis-40 justify-center"
 				/>
 				<template #body>
-					<UCollapsible class="mb-4">
+					<UCollapsible class="mb-4 bg-muted rounded">
 						<UButton
 							:label="t('settings')"
 							variant="soft"
@@ -318,27 +318,36 @@ const importDataFromJson = async () => {
 							}"
 						/>
 						<template #content>
-							<div
-								class="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center p-4"
-							>
+							<div class="flex flex-col sm:flex-row gap-2 sm:gap-4 p-4">
 								<UFormField :label="t('totalSaves')" name="total">
 									<UInputNumber
 										v-model="totalSaves"
 										:placeholder="t('totalSaves')"
+										color="neutral"
 										class="w-32"
 									/>
 								</UFormField>
-								<UFormField :label="t('cols')" name="cols">
-									<UInputNumber v-model="saveCols" class="w-32" />
-								</UFormField>
-								<UFormField :label="t('rows')" name="rows">
-									<UInputNumber v-model="saveRows" class="w-32" />
-								</UFormField>
+								<div class="flex gap-2 sm:gap-4">
+									<UFormField :label="t('cols')" name="cols">
+										<UInputNumber
+											v-model="saveCols"
+											color="neutral"
+											class="w-32"
+										/>
+									</UFormField>
+									<UFormField :label="t('rows')" name="rows">
+										<UInputNumber
+											v-model="saveRows"
+											color="neutral"
+											class="w-32"
+										/>
+									</UFormField>
+								</div>
 							</div>
 						</template>
 					</UCollapsible>
 					<div
-						class="grid gap-4 max-w-full overflow-x-auto"
+						class="grid gap-2 sm:gap-4 max-w-full overflow-x-auto"
 						:style="{ gridTemplateColumns: `repeat(${saveCols}, 1fr)` }"
 					>
 						<UCard
@@ -352,7 +361,7 @@ const importDataFromJson = async () => {
 									'px-4 sm:px-6 pb-4 sm:pb-6 pt-0 sm:pt-0 flex justify-end',
 							}"
 							variant="solid"
-							class="mb-2 bg-default text-default border border-default"
+							class="bg-default text-default border border-default"
 						>
 							<p class="text-sm text-muted">
 								No.{{ index + 1 }} ({{ page }} -
@@ -424,7 +433,7 @@ const importDataFromJson = async () => {
 						<UFormField name="description" :label="t('description')">
 							<UInput v-model="state.description" type="text" class="w-full" />
 						</UFormField>
-						<UFormField name="choices" :label="t('choices')">
+						<UFormField name="choices" :label="t('choices')" class="mt-2">
 							<div
 								v-for="(choice, index) in state.choices"
 								:key="index"
