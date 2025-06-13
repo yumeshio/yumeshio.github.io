@@ -2,6 +2,10 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
+const { t } = useI18n({
+	useScope: 'local',
+})
+
 const schema = z.object({
 	description: z.string().optional(),
 	choices: z.array(z.string()),
@@ -531,3 +535,25 @@ const importDataFromJson = async () => {
 		</UModal>
 	</div>
 </template>
+
+<i18n lang="json">
+{
+	"ja": {
+		"title": "ノベルログ",
+		"importData": "データをインポート",
+		"exportData": "データをエクスポート",
+		"saveLoad": "保存 / 読み込み",
+		"configs": "設定",
+		"totalSaves": "保存数",
+		"cols": "列数",
+		"rows": "行数",
+		"addItem": "アイテムを追加",
+		"description": "説明",
+		"choices": "選択肢",
+		"allItems": "全アイテム",
+		"delete": "削除",
+		"load": "読み込み",
+		"submit": "送信"
+	}
+}
+</i18n>
