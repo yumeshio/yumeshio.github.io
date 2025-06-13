@@ -65,29 +65,9 @@ watch(totalSaves, () => {
 	}
 })
 
-const items = ref<ChoiceItem[]>([
-	{
-		choices: ['A', 'B', 'C'],
-		selectedChoice: 0,
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-	},
-	{
-		choices: ['A', 'B', 'C'],
-		selectedChoice: 0,
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-	},
-])
+const items = ref<ChoiceItem[]>([])
 
-const allItems = ref<Omit<ChoiceItem, 'selectedChoice'>[]>([
-	{
-		choices: ['A', 'B', 'C'],
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-	},
-	{
-		choices: ['A', 'B', 'C'],
-		description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-	},
-])
+const allItems = ref<Omit<ChoiceItem, 'selectedChoice'>[]>([])
 
 const handleAddItem = (activeItem: number) => {
 	itemModalOpen.value = true
@@ -248,7 +228,11 @@ onMounted(() => {
 
 	<div class="flex justify-center gap-4">
 		<UModal v-model:open="saveModalOpen" title="Save / Load">
-			<UButton label="Save / Load" color="secondary" />
+			<UButton
+				label="Save / Load"
+				color="secondary"
+				leading-icon="i-lucide-save"
+			/>
 			<template #body>
 				<UCollapsible class="mb-4">
 					<UButton
@@ -284,7 +268,7 @@ onMounted(() => {
 					</template>
 				</UCollapsible>
 				<div
-					class="grid gap-4"
+					class="grid gap-4 max-w-full overflow-x-auto"
 					:style="{ gridTemplateColumns: `repeat(${saveCols}, 1fr)` }"
 				>
 					<UCard
@@ -299,8 +283,11 @@ onMounted(() => {
 						variant="solid"
 						class="mb-2 bg-default text-default border border-default"
 					>
-						<p>
+						<p class="text-sm text-muted">
 							No.{{ index + 1 }} ({{ page }} - {{ (index % savesPerPage) + 1 }})
+						</p>
+						<p>
+							{{ saveItem?.items[saveItem.items.length - 1].description }}
 						</p>
 						<p>
 							{{
@@ -350,7 +337,11 @@ onMounted(() => {
 			v-model:open="itemModalOpen"
 			:title="state.activeItem >= 0 ? 'Edit Item' : 'Add Item'"
 		>
-			<UButton label="Add Item" @click="handleAddItem(-1)" />
+			<UButton
+				label="Add Item"
+				leading-icon="i-lucide-circle-plus"
+				@click="handleAddItem(-1)"
+			/>
 			<template #body>
 				<UForm :schema="schema" :state="state" @submit="handleSubmit">
 					<UFormField name="description" label="Description">
@@ -403,7 +394,12 @@ onMounted(() => {
 					</UFormField>
 					<div class="flex items-center mt-4">
 						<UModal v-model:open="allItemsModalOpen" title="All items">
-							<UButton label="All items" color="neutral" variant="subtle" />
+							<UButton
+								label="All items"
+								color="neutral"
+								variant="subtle"
+								leading-icon="i-lucide-history"
+							/>
 							<template #body>
 								<UCard
 									v-for="(item, index) in allItems"
@@ -441,9 +437,15 @@ onMounted(() => {
 							label="Delete"
 							class="ml-auto"
 							color="warning"
+							leading-icon="i-lucide-trash"
 							@click="handleDeleteItem(state.activeItem)"
 						/>
-						<UButton type="submit" label="Submit" class="ml-2" />
+						<UButton
+							type="submit"
+							label="Submit"
+							leading-icon="i-lucide-send"
+							class="ml-2"
+						/>
 					</div>
 				</UForm>
 			</template>
