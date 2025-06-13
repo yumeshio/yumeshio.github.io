@@ -247,7 +247,11 @@ const importDataFromJson = async () => {
 			{{ saveData.title.length > 0 ? saveData.title : 'Click to edit title' }}
 		</h1>
 		<template #content>
-			<UInput v-model="saveData.title" type="text" placeholder="Enter title" />
+			<UInput
+				v-model.trim="saveData.title"
+				type="text"
+				placeholder="Enter title"
+			/>
 		</template>
 	</UPopover>
 	<UTimeline
