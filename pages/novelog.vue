@@ -202,7 +202,7 @@ const exportDataToJson = () => {
 	const url = URL.createObjectURL(jsonBlob)
 	const link = document.createElement('a')
 	link.href = url
-	link.download = 'novelog-data.json'
+	link.download = `${saveData.title.trim().length > 0 ? saveData.title.trim() : 'novelog-data'}.json`
 	link.click()
 	URL.revokeObjectURL(url)
 }
