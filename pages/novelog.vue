@@ -30,10 +30,12 @@ type SaveItem = {
 
 type SaveData = {
 	items: (SaveItem | undefined)[]
+	title: string
 }
 
 const saveData = reactive<SaveData>({
 	items: [],
+	title: 'Click to edit title',
 })
 
 watch(
@@ -238,6 +240,16 @@ const importDataFromJson = async () => {
 </script>
 
 <template>
+	<UPopover>
+		<h1
+			class="text-center text-lg sm:text-xl lg:text-2xl font-bold mb-4 sm:mb-6 lg:mb-8"
+		>
+			{{ saveData.title.length > 0 ? saveData.title : 'Click to edit title' }}
+		</h1>
+		<template #content>
+			<UInput v-model="saveData.title" type="text" placeholder="Enter title" />
+		</template>
+	</UPopover>
 	<UTimeline
 		:items="items"
 		size="xs"
