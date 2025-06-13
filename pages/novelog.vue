@@ -311,12 +311,12 @@ onMounted(() => {
 							<UButton
 								v-if="saveItem"
 								label="Load"
-								trailing-icon="i-lucide-edit"
+								leading-icon="i-lucide-square-arrow-out-down-right"
 								@click="handleLoadSave(saveItem)"
 							/>
 							<UButton
 								label="Save"
-								trailing-icon="i-lucide-save"
+								leading-icon="i-lucide-save"
 								variant="outline"
 								@click="
 									saveData.items[index] = {
@@ -328,7 +328,7 @@ onMounted(() => {
 								v-if="saveItem"
 								label="Delete"
 								variant="outline"
-								trailing-icon="i-lucide-trash"
+								leading-icon="i-lucide-trash"
 								color="warning"
 								@click="saveData.items[index] = undefined"
 							/>
