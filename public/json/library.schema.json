@@ -1,0 +1,12 @@
+{
+	"$schema": "https://json-schema.org/draft-07/schema",
+	"$id": "https://yumeshio.com/json/library.schema.json",
+	"title": "Library",
+	"description": "An item in the library",
+	"type": "object",
+	"properties": {
+		"title": {
+			"type": "string"
+		}
+	}
+}

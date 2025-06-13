@@ -2,5 +2,11 @@
 	"editor.indentSize": "tabSize",
 	"editor.tabSize": 2,
 	"editor.formatOnSave": true,
-	"editor.defaultFormatter": "esbenp.prettier-vscode"
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"json.schemas": [
+		{
+			"fileMatch": ["/content/library/**/*.json"],
+			"url": "/public/json/library.schema.json"
+		}
+	]
 }
