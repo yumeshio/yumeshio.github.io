@@ -38,24 +38,32 @@ const items = computed((): NavigationMenuItem[] => [
 		}),
 	},
 	{
-		label: t('devBlog'),
+		label: t('blog'),
 		icon: 'i-lucide-book',
 		class: 'px-4 sm:px-2.5',
 		to: resolve({
 			path: '/blog',
-			query: { tag: 'dev' },
 		}),
-		active: route.path.includes('/blog') && hasTag(route.query, 'dev'),
-	},
-	{
-		label: t('gameBlog'),
-		icon: 'i-lucide-book',
-		class: 'px-4 sm:px-2.5',
-		to: resolve({
-			path: '/blog',
-			query: { tag: 'game' },
-		}),
-		active: route.path.includes('/blog') && hasTag(route.query, 'game'),
+		children: [
+			{
+				label: t('devBlog'),
+				icon: 'i-lucide-book',
+				to: resolve({
+					path: '/blog',
+					query: { tag: 'dev' },
+				}),
+				active: route.path.includes('/blog') && hasTag(route.query, 'dev'),
+			},
+			{
+				label: t('gameBlog'),
+				icon: 'i-lucide-book',
+				to: resolve({
+					path: '/blog',
+					query: { tag: 'game' },
+				}),
+				active: route.path.includes('/blog') && hasTag(route.query, 'game'),
+			},
+		],
 	},
 	{
 		label: t('library'),
@@ -64,6 +72,20 @@ const items = computed((): NavigationMenuItem[] => [
 		to: resolve({
 			path: '/library',
 		}),
+	},
+	{
+		label: t('applications'),
+		icon: 'i-lucide-panels-top-left',
+		class: 'px-4 sm:px-2.5',
+		children: [
+			{
+				label: t('novelog'),
+				icon: 'i-lucide-book',
+				description: t('novelogDescription'),
+				to: resolve({ path: '/novelog' }),
+			},
+		],
+		active: route.path.includes('/novelog'),
 	},
 ])
 const open = ref<boolean>(false)
@@ -74,10 +96,19 @@ watch(viewport.breakpoint, () => {
 		open.value = false
 	}
 })
+watch(route, () => {
+	open.value = viewport.isGreaterOrEquals('sm')
+})
 </script>
 
 <template>
-	<UCollapsible v-model:open="open" class="flex flex-col mb-4 sm:mb-6 lg:mb-8">
+	<UCollapsible
+		v-model:open="open"
+		class="flex flex-col mb-4 sm:mb-6 lg:mb-8"
+		:ui="{
+			content: 'sm:overflow-visible',
+		}"
+	>
 		<div
 			class="px-4 sm:px-6 lg:px-8 py-2 sm:py-4 flex justify-between sm:justify-center bg-muted sm:bg-inherit pointer-events-none"
 		>
@@ -97,11 +128,16 @@ watch(viewport.breakpoint, () => {
 			/>
 		</div>
 		<template #content>
-			<div @click="open = viewport.isGreaterOrEquals('sm')">
+			<div>
 				<UNavigationMenu
 					:items="items"
 					:orientation
-					class="w-full justify-center"
+					content-orientation="vertical"
+					class="justify-center"
+					:ui="{
+						linkLeadingIcon: 'min-w-4 min-h-4 sm:min-w-5 sm:min-h-5',
+						childLinkIcon: 'min-w-4 min-h-4 sm:min-w-5 sm:min-h-5',
+					}"
 				/>
 				<div class="bg-accented h-0.5 max-w-screen-sm mx-auto" />
 			</div>
