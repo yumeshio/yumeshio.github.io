@@ -50,6 +50,7 @@ export default defineNuxtConfig({
 				'lucide:chevrons-right',
 				'lucide:chevron-left',
 				'lucide:chevrons-left',
+				'lucide:x',
 			],
 			scan: true,
 		},
