@@ -248,13 +248,13 @@ const importDataFromJson = async () => {
 		<h1
 			class="text-center text-lg sm:text-xl lg:text-2xl font-bold mb-4 sm:mb-6 lg:mb-8"
 		>
-			{{ saveData.title.length > 0 ? saveData.title : 'Click to edit title' }}
+			{{ saveData.title.length > 0 ? saveData.title : t('clickToEditTitle') }}
 		</h1>
 		<template #content>
 			<UInput
 				v-model.trim="saveData.title"
 				type="text"
-				placeholder="Enter title"
+				:placeholder="t('enterTitle')"
 			/>
 		</template>
 	</UPopover>
@@ -298,28 +298,28 @@ const importDataFromJson = async () => {
 		class="flex flex-col-reverse sm:flex-row items-center justify-center gap-4"
 	>
 		<UButton
-			label="Import Data"
+			:label="t('importData')"
 			variant="subtle"
 			color="neutral"
 			leading-icon="i-lucide-upload"
 			@click="importDataFromJson"
 		/>
 		<UButton
-			label="Export Data"
+			:label="t('exportData')"
 			variant="subtle"
 			leading-icon="i-lucide-download"
 			@click="exportDataToJson"
 		/>
-		<UModal v-model:open="saveModalOpen" title="Save / Load">
+		<UModal v-model:open="saveModalOpen" :title="t('saveAndLoad')">
 			<UButton
-				label="Save / Load"
+				:label="t('saveAndLoad')"
 				color="secondary"
 				leading-icon="i-lucide-save"
 			/>
 			<template #body>
 				<UCollapsible class="mb-4">
 					<UButton
-						label="Configs"
+						:label="t('settings')"
 						variant="soft"
 						color="neutral"
 						leading-icon="i-lucide-settings"
@@ -334,17 +334,17 @@ const importDataFromJson = async () => {
 						<div
 							class="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center p-4"
 						>
-							<UFormField label="Total Saves" name="total">
+							<UFormField :label="t('totalSaves')" name="total">
 								<UInputNumber
 									v-model="totalSaves"
-									placeholder="Total Saves"
+									:placeholder="t('totalSaves')"
 									class="w-32"
 								/>
 							</UFormField>
-							<UFormField label="Cols" name="cols">
+							<UFormField :label="t('cols')" name="cols">
 								<UInputNumber v-model="saveCols" class="w-32" />
 							</UFormField>
-							<UFormField label="Rows" name="rows">
+							<UFormField :label="t('rows')" name="rows">
 								<UInputNumber v-model="saveRows" class="w-32" />
 							</UFormField>
 						</div>
@@ -380,12 +380,12 @@ const importDataFromJson = async () => {
 						<div class="flex flex-wrap gap-2 mt-2">
 							<UButton
 								v-if="saveItem"
-								label="Load"
+								:label="t('load')"
 								leading-icon="i-lucide-square-arrow-out-down-right"
 								@click="handleLoadSave(saveItem)"
 							/>
 							<UButton
-								label="Save"
+								:label="t('save')"
 								leading-icon="i-lucide-save"
 								variant="outline"
 								@click="
@@ -396,7 +396,7 @@ const importDataFromJson = async () => {
 							/>
 							<UButton
 								v-if="saveItem"
-								label="Delete"
+								:label="t('delete')"
 								variant="outline"
 								leading-icon="i-lucide-trash"
 								color="warning"
@@ -418,19 +418,21 @@ const importDataFromJson = async () => {
 		</UModal>
 		<UModal
 			v-model:open="itemModalOpen"
-			:title="state.activeItem >= 0 ? 'Edit Item' : 'Add Item'"
+			:title="
+				state.activeItem >= 0 ? t('itemModalTitleEdit') : t('itemModalTitleAdd')
+			"
 		>
 			<UButton
-				label="Add Item"
+				:label="t('addItem')"
 				leading-icon="i-lucide-circle-plus"
 				@click="handleAddItem(-1)"
 			/>
 			<template #body>
 				<UForm :schema="schema" :state="state" @submit="handleSubmit">
-					<UFormField name="description" label="Description">
+					<UFormField name="description" :label="t('description')">
 						<UInput v-model="state.description" type="text" class="w-full" />
 					</UFormField>
-					<UFormField name="choices" label="Choices">
+					<UFormField name="choices" :label="t('choices')">
 						<div
 							v-for="(choice, index) in state.choices"
 							:key="index"
@@ -467,7 +469,7 @@ const importDataFromJson = async () => {
 							/>
 						</div>
 						<UButton
-							label="Add Choice"
+							:label="t('addChoice')"
 							class="mt-2 flex ml-auto"
 							leading-icon="i-lucide-plus"
 							color="neutral"
@@ -476,9 +478,9 @@ const importDataFromJson = async () => {
 						/>
 					</UFormField>
 					<div class="flex items-center mt-4">
-						<UModal v-model:open="allItemsModalOpen" title="All items">
+						<UModal v-model:open="allItemsModalOpen" :title="t('allItems')">
 							<UButton
-								label="All items"
+								:label="t('allItems')"
 								color="neutral"
 								variant="subtle"
 								leading-icon="i-lucide-history"
@@ -498,7 +500,7 @@ const importDataFromJson = async () => {
 									<p>{{ item.description }}</p>
 									<template #footer>
 										<UButton
-											label="Delete"
+											:label="t('delete')"
 											trailing-icon="i-lucide-trash"
 											color="neutral"
 											size="xs"
@@ -506,7 +508,7 @@ const importDataFromJson = async () => {
 											@click="handleDeleteItemFromAllItems(index)"
 										/>
 										<UButton
-											label="Load"
+											:label="t('load')"
 											trailing-icon="i-lucide-edit"
 											size="xs"
 											class="ml-2"
@@ -517,7 +519,7 @@ const importDataFromJson = async () => {
 							</template>
 						</UModal>
 						<UButton
-							label="Delete"
+							:label="t('delete')"
 							class="ml-auto"
 							color="warning"
 							leading-icon="i-lucide-trash"
@@ -525,7 +527,7 @@ const importDataFromJson = async () => {
 						/>
 						<UButton
 							type="submit"
-							label="Submit"
+							:label="t('submit')"
 							leading-icon="i-lucide-send"
 							class="ml-2"
 						/>
@@ -540,20 +542,28 @@ const importDataFromJson = async () => {
 {
 	"ja": {
 		"title": "ノベルログ",
-		"importData": "データをインポート",
-		"exportData": "データをエクスポート",
+		"importData": "データを読み込み",
+		"exportData": "データを保存",
 		"saveLoad": "保存 / 読み込み",
 		"configs": "設定",
-		"totalSaves": "保存数",
+		"totalSaves": "セーブ数",
 		"cols": "列数",
 		"rows": "行数",
-		"addItem": "アイテムを追加",
+		"addItem": "追加",
+		"addChoice": "選択肢を追加",
 		"description": "説明",
 		"choices": "選択肢",
-		"allItems": "全アイテム",
+		"allItems": "ログ一覧",
 		"delete": "削除",
-		"load": "読み込み",
-		"submit": "送信"
+		"load": "ロード",
+		"submit": "送信",
+		"itemModalTitleAdd": "新規",
+		"itemModalTitleEdit": "編集",
+		"clickToEditTitle": "タイトルをクリックして編集",
+		"enterTitle": "タイトルを入力",
+		"saveAndLoad": "セーブ／ロード",
+		"settings": "設定",
+		"save": "セーブ"
 	}
 }
 </i18n>
