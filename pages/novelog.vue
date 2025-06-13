@@ -294,247 +294,257 @@ const importDataFromJson = async () => {
 		</template>
 	</UTimeline>
 
-	<div
-		class="flex flex-col-reverse sm:flex-row items-center justify-center gap-4"
-	>
-		<UButton
-			:label="t('importData')"
-			variant="subtle"
-			color="neutral"
-			leading-icon="i-lucide-upload"
-			@click="importDataFromJson"
-		/>
-		<UButton
-			:label="t('exportData')"
-			variant="subtle"
-			leading-icon="i-lucide-download"
-			@click="exportDataToJson"
-		/>
-		<UModal v-model:open="saveModalOpen" :title="t('saveAndLoad')">
-			<UButton
-				:label="t('saveAndLoad')"
-				color="secondary"
-				leading-icon="i-lucide-save"
-			/>
-			<template #body>
-				<UCollapsible class="mb-4">
-					<UButton
-						:label="t('settings')"
-						variant="soft"
-						color="neutral"
-						leading-icon="i-lucide-settings"
-						trailing-icon="i-lucide-chevron-down"
-						class="w-full group"
+	<div class="flex flex-col gap-4">
+		<div class="flex gap-4 justify-center">
+			<UModal v-model:open="saveModalOpen" :title="t('saveAndLoad')">
+				<UButton
+					:label="t('saveAndLoad')"
+					color="secondary"
+					leading-icon="i-lucide-save"
+					class="basis-40 justify-center"
+				/>
+				<template #body>
+					<UCollapsible class="mb-4">
+						<UButton
+							:label="t('settings')"
+							variant="soft"
+							color="neutral"
+							leading-icon="i-lucide-settings"
+							trailing-icon="i-lucide-chevron-down"
+							class="w-full group"
+							:ui="{
+								trailingIcon:
+									'ml-auto group-data-[state=open]:rotate-180 transition-transform duration-200',
+							}"
+						/>
+						<template #content>
+							<div
+								class="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center p-4"
+							>
+								<UFormField :label="t('totalSaves')" name="total">
+									<UInputNumber
+										v-model="totalSaves"
+										:placeholder="t('totalSaves')"
+										class="w-32"
+									/>
+								</UFormField>
+								<UFormField :label="t('cols')" name="cols">
+									<UInputNumber v-model="saveCols" class="w-32" />
+								</UFormField>
+								<UFormField :label="t('rows')" name="rows">
+									<UInputNumber v-model="saveRows" class="w-32" />
+								</UFormField>
+							</div>
+						</template>
+					</UCollapsible>
+					<div
+						class="grid gap-4 max-w-full overflow-x-auto"
+						:style="{ gridTemplateColumns: `repeat(${saveCols}, 1fr)` }"
+					>
+						<UCard
+							v-for="(saveItem, index) in saveData.items.slice(
+								(page - 1) * savesPerPage,
+								page * savesPerPage,
+							)"
+							:key="index"
+							:ui="{
+								footer:
+									'px-4 sm:px-6 pb-4 sm:pb-6 pt-0 sm:pt-0 flex justify-end',
+							}"
+							variant="solid"
+							class="mb-2 bg-default text-default border border-default"
+						>
+							<p class="text-sm text-muted">
+								No.{{ index + 1 }} ({{ page }} -
+								{{ (index % savesPerPage) + 1 }})
+							</p>
+							<p>
+								{{ saveItem?.items[saveItem.items.length - 1].description }}
+							</p>
+							<p>
+								{{
+									saveItem?.items[saveItem.items.length - 1].choices.join(' / ')
+								}}
+							</p>
+							<div class="flex flex-wrap gap-2 mt-2">
+								<UButton
+									v-if="saveItem"
+									:label="t('load')"
+									leading-icon="i-lucide-square-arrow-out-down-right"
+									@click="handleLoadSave(saveItem)"
+								/>
+								<UButton
+									:label="t('save')"
+									leading-icon="i-lucide-save"
+									variant="outline"
+									@click="
+										saveData.items[index] = {
+											items: items.map((item) => ({ ...item })),
+										}
+									"
+								/>
+								<UButton
+									v-if="saveItem"
+									:label="t('delete')"
+									variant="outline"
+									leading-icon="i-lucide-trash"
+									color="warning"
+									@click="saveData.items[index] = undefined"
+								/>
+							</div>
+						</UCard>
+					</div>
+					<UPagination
+						v-model:page="page"
+						:total="totalSaves"
+						:items-per-page="savesPerPage"
+						class="mt-4"
 						:ui="{
-							trailingIcon:
-								'ml-auto group-data-[state=open]:rotate-180 transition-transform duration-200',
+							list: 'justify-center',
 						}"
 					/>
-					<template #content>
-						<div
-							class="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center p-4"
-						>
-							<UFormField :label="t('totalSaves')" name="total">
-								<UInputNumber
-									v-model="totalSaves"
-									:placeholder="t('totalSaves')"
-									class="w-32"
-								/>
-							</UFormField>
-							<UFormField :label="t('cols')" name="cols">
-								<UInputNumber v-model="saveCols" class="w-32" />
-							</UFormField>
-							<UFormField :label="t('rows')" name="rows">
-								<UInputNumber v-model="saveRows" class="w-32" />
-							</UFormField>
-						</div>
-					</template>
-				</UCollapsible>
-				<div
-					class="grid gap-4 max-w-full overflow-x-auto"
-					:style="{ gridTemplateColumns: `repeat(${saveCols}, 1fr)` }"
-				>
-					<UCard
-						v-for="(saveItem, index) in saveData.items.slice(
-							(page - 1) * savesPerPage,
-							page * savesPerPage,
-						)"
-						:key="index"
-						:ui="{
-							footer: 'px-4 sm:px-6 pb-4 sm:pb-6 pt-0 sm:pt-0 flex justify-end',
-						}"
-						variant="solid"
-						class="mb-2 bg-default text-default border border-default"
-					>
-						<p class="text-sm text-muted">
-							No.{{ index + 1 }} ({{ page }} - {{ (index % savesPerPage) + 1 }})
-						</p>
-						<p>
-							{{ saveItem?.items[saveItem.items.length - 1].description }}
-						</p>
-						<p>
-							{{
-								saveItem?.items[saveItem.items.length - 1].choices.join(' / ')
-							}}
-						</p>
-						<div class="flex flex-wrap gap-2 mt-2">
-							<UButton
-								v-if="saveItem"
-								:label="t('load')"
-								leading-icon="i-lucide-square-arrow-out-down-right"
-								@click="handleLoadSave(saveItem)"
-							/>
-							<UButton
-								:label="t('save')"
-								leading-icon="i-lucide-save"
-								variant="outline"
-								@click="
-									saveData.items[index] = {
-										items: items.map((item) => ({ ...item })),
-									}
-								"
-							/>
-							<UButton
-								v-if="saveItem"
-								:label="t('delete')"
-								variant="outline"
-								leading-icon="i-lucide-trash"
-								color="warning"
-								@click="saveData.items[index] = undefined"
-							/>
-						</div>
-					</UCard>
-				</div>
-				<UPagination
-					v-model:page="page"
-					:total="totalSaves"
-					:items-per-page="savesPerPage"
-					class="mt-4"
-					:ui="{
-						list: 'justify-center',
-					}"
+				</template>
+			</UModal>
+			<UModal
+				v-model:open="itemModalOpen"
+				:title="
+					state.activeItem >= 0
+						? t('itemModalTitleEdit')
+						: t('itemModalTitleAdd')
+				"
+			>
+				<UButton
+					:label="t('addItem')"
+					leading-icon="i-lucide-circle-plus"
+					class="basis-40 justify-center"
+					@click="handleAddItem(-1)"
 				/>
-			</template>
-		</UModal>
-		<UModal
-			v-model:open="itemModalOpen"
-			:title="
-				state.activeItem >= 0 ? t('itemModalTitleEdit') : t('itemModalTitleAdd')
-			"
-		>
-			<UButton
-				:label="t('addItem')"
-				leading-icon="i-lucide-circle-plus"
-				@click="handleAddItem(-1)"
-			/>
-			<template #body>
-				<UForm :schema="schema" :state="state" @submit="handleSubmit">
-					<UFormField name="description" :label="t('description')">
-						<UInput v-model="state.description" type="text" class="w-full" />
-					</UFormField>
-					<UFormField name="choices" :label="t('choices')">
-						<div
-							v-for="(choice, index) in state.choices"
-							:key="index"
-							class="flex items-center w-full"
-						>
-							<UInput
-								v-model="state.choices![index]"
-								type="text"
-								:placeholder="'Choice ' + (index + 1)"
-								:class="index > 0 ? 'mt-2' : ''"
-								class="grow"
-							/>
+				<template #body>
+					<UForm :schema="schema" :state="state" @submit="handleSubmit">
+						<UFormField name="description" :label="t('description')">
+							<UInput v-model="state.description" type="text" class="w-full" />
+						</UFormField>
+						<UFormField name="choices" :label="t('choices')">
+							<div
+								v-for="(choice, index) in state.choices"
+								:key="index"
+								class="flex items-center w-full"
+							>
+								<UInput
+									v-model="state.choices![index]"
+									type="text"
+									:placeholder="'Choice ' + (index + 1)"
+									:class="index > 0 ? 'mt-2' : ''"
+									class="grow"
+								/>
+								<UButton
+									:trailing-icon="
+										state.selectedChoice === index ? 'i-lucide-check' : ''
+									"
+									variant="outline"
+									size="xs"
+									class="ml-2 rounded-full size-6 items-center justify-center"
+									@click="
+										state.selectedChoice === index
+											? (state.selectedChoice = -1)
+											: (state.selectedChoice = index)
+									"
+								/>
+								<UButton
+									v-if="state.choices!.length > 1"
+									trailing-icon="i-lucide-trash"
+									color="warning"
+									variant="soft"
+									size="sm"
+									class="ml-2"
+									@click="state.choices!.splice(index, 1)"
+								/>
+							</div>
 							<UButton
-								:trailing-icon="
-									state.selectedChoice === index ? 'i-lucide-check' : ''
-								"
-								variant="outline"
-								size="xs"
-								class="ml-2 rounded-full size-6 items-center justify-center"
-								@click="
-									state.selectedChoice === index
-										? (state.selectedChoice = -1)
-										: (state.selectedChoice = index)
-								"
-							/>
-							<UButton
-								v-if="state.choices!.length > 1"
-								trailing-icon="i-lucide-trash"
-								color="warning"
+								:label="t('addChoice')"
+								class="mt-2 flex ml-auto"
+								leading-icon="i-lucide-plus"
+								color="neutral"
 								variant="soft"
-								size="sm"
+								@click="state.choices!.push('')"
+							/>
+						</UFormField>
+						<div class="flex items-center mt-4">
+							<UModal v-model:open="allItemsModalOpen" :title="t('allItems')">
+								<UButton
+									:label="t('allItems')"
+									color="neutral"
+									variant="subtle"
+									leading-icon="i-lucide-history"
+								/>
+								<template #body>
+									<UCard
+										v-for="(item, index) in allItems"
+										:key="index"
+										:ui="{
+											footer:
+												'px-4 sm:px-6 pb-4 sm:pb-6 pt-0 sm:pt-0 flex justify-end',
+										}"
+										variant="solid"
+										class="mb-2 bg-default text-default border border-default"
+									>
+										<p>{{ item.choices.join(' / ') }}</p>
+										<p>{{ item.description }}</p>
+										<template #footer>
+											<UButton
+												:label="t('delete')"
+												trailing-icon="i-lucide-trash"
+												color="neutral"
+												size="xs"
+												class="ml-auto"
+												@click="handleDeleteItemFromAllItems(index)"
+											/>
+											<UButton
+												:label="t('load')"
+												trailing-icon="i-lucide-edit"
+												size="xs"
+												class="ml-2"
+												@click="handleLoadItem(item)"
+											/>
+										</template>
+									</UCard>
+								</template>
+							</UModal>
+							<UButton
+								:label="t('delete')"
+								class="ml-auto"
+								color="warning"
+								leading-icon="i-lucide-trash"
+								@click="handleDeleteItem(state.activeItem)"
+							/>
+							<UButton
+								type="submit"
+								:label="t('submit')"
+								leading-icon="i-lucide-send"
 								class="ml-2"
-								@click="state.choices!.splice(index, 1)"
 							/>
 						</div>
-						<UButton
-							:label="t('addChoice')"
-							class="mt-2 flex ml-auto"
-							leading-icon="i-lucide-plus"
-							color="neutral"
-							variant="soft"
-							@click="state.choices!.push('')"
-						/>
-					</UFormField>
-					<div class="flex items-center mt-4">
-						<UModal v-model:open="allItemsModalOpen" :title="t('allItems')">
-							<UButton
-								:label="t('allItems')"
-								color="neutral"
-								variant="subtle"
-								leading-icon="i-lucide-history"
-							/>
-							<template #body>
-								<UCard
-									v-for="(item, index) in allItems"
-									:key="index"
-									:ui="{
-										footer:
-											'px-4 sm:px-6 pb-4 sm:pb-6 pt-0 sm:pt-0 flex justify-end',
-									}"
-									variant="solid"
-									class="mb-2 bg-default text-default border border-default"
-								>
-									<p>{{ item.choices.join(' / ') }}</p>
-									<p>{{ item.description }}</p>
-									<template #footer>
-										<UButton
-											:label="t('delete')"
-											trailing-icon="i-lucide-trash"
-											color="neutral"
-											size="xs"
-											class="ml-auto"
-											@click="handleDeleteItemFromAllItems(index)"
-										/>
-										<UButton
-											:label="t('load')"
-											trailing-icon="i-lucide-edit"
-											size="xs"
-											class="ml-2"
-											@click="handleLoadItem(item)"
-										/>
-									</template>
-								</UCard>
-							</template>
-						</UModal>
-						<UButton
-							:label="t('delete')"
-							class="ml-auto"
-							color="warning"
-							leading-icon="i-lucide-trash"
-							@click="handleDeleteItem(state.activeItem)"
-						/>
-						<UButton
-							type="submit"
-							:label="t('submit')"
-							leading-icon="i-lucide-send"
-							class="ml-2"
-						/>
-					</div>
-				</UForm>
-			</template>
-		</UModal>
+					</UForm>
+				</template>
+			</UModal>
+		</div>
+		<div class="flex gap-4 justify-center">
+			<UButton
+				:label="t('importData')"
+				variant="subtle"
+				color="neutral"
+				leading-icon="i-lucide-upload"
+				class="basis-40 justify-center"
+				@click="importDataFromJson"
+			/>
+			<UButton
+				:label="t('exportData')"
+				variant="subtle"
+				leading-icon="i-lucide-download"
+				class="basis-40 justify-center"
+				@click="exportDataToJson"
+			/>
+		</div>
 	</div>
 </template>
 
