@@ -45,7 +45,12 @@ export default defineNuxtConfig({
 	icon: {
 		serverBundle: false,
 		clientBundle: {
-			// icons: ['i-lucide-house', 'i-lucide-book', 'lucide:align-justify'],
+			icons: [
+				'lucide:chevron-right',
+				'lucide:chevrons-right',
+				'lucide:chevron-left',
+				'lucide:chevrons-left',
+			],
 			scan: true,
 		},
 	},
