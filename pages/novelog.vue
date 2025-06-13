@@ -187,6 +187,54 @@ onMounted(() => {
 		allItems.value = JSON.parse(localAllItems)
 	}
 })
+
+const exportDataToJson = () => {
+	const data = {
+		saveData: saveData,
+		items: items.value,
+		allItems: allItems.value,
+	}
+	const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
+		type: 'application/json',
+	})
+	const url = URL.createObjectURL(jsonBlob)
+	const link = document.createElement('a')
+	link.href = url
+	link.download = 'novelog-data.json'
+	link.click()
+	URL.revokeObjectURL(url)
+}
+const importDataFromJson = async () => {
+	const input = document.createElement('input')
+	input.type = 'file'
+	input.accept = '.json'
+	input.onchange = async (event) => {
+		const file = (event.target as HTMLInputElement).files?.[0]
+		if (file) {
+			try {
+				const text = await file.text()
+				const data = JSON.parse(text)
+				if (data.saveData && data.items && data.allItems) {
+					Object.assign(saveData, data.saveData)
+					items.value = data.items
+					allItems.value = data.allItems
+					totalSaves.value = saveData.items.length
+					localStorage.setItem('novelog-save-data', JSON.stringify(saveData))
+					localStorage.setItem('novelog-items', JSON.stringify(items.value))
+					localStorage.setItem(
+						'novelog-all-items',
+						JSON.stringify(allItems.value),
+					)
+				} else {
+					alert('Invalid JSON structure.')
+				}
+			} catch (error) {
+				alert('Failed to load JSON file.')
+			}
+		}
+	}
+	input.click()
+}
 </script>
 
 <template>
@@ -226,7 +274,22 @@ onMounted(() => {
 		</template>
 	</UTimeline>
 
-	<div class="flex justify-center gap-4">
+	<div
+		class="flex flex-col-reverse sm:flex-row items-center justify-center gap-4"
+	>
+		<UButton
+			label="Import Data"
+			variant="subtle"
+			color="neutral"
+			leading-icon="i-lucide-upload"
+			@click="importDataFromJson"
+		/>
+		<UButton
+			label="Export Data"
+			variant="subtle"
+			leading-icon="i-lucide-download"
+			@click="exportDataToJson"
+		/>
 		<UModal v-model:open="saveModalOpen" title="Save / Load">
 			<UButton
 				label="Save / Load"
