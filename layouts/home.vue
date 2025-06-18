@@ -1,3 +1,4 @@
 <template>
 	<slot />
+	<AppFooter />
 </template>
