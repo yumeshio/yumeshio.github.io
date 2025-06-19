@@ -131,7 +131,12 @@ onUnmounted(() => {
 		<UPopover
 			v-if="enabled && bounding"
 			v-model:open="open"
+			:arrow="true"
 			:dismissible="false"
+			:modal="true"
+			:ui="{
+				content: 'max-w-(--reka-popper-available-width)',
+			}"
 		>
 			<div
 				class="absolute border border-primary"
@@ -146,7 +151,7 @@ onUnmounted(() => {
 			></div>
 			<template #content>
 				<UContainer class="bg-default text-default p-4 sm:p-6 md:p-8">
-					<div>{{ steps[currentStep].content }}</div>
+					<div class="max-w-full">{{ steps[currentStep].content }}</div>
 					<div class="flex gap-2 sm:gap-4 justify-end mt-4 sm:mt-6 lg:mt-8">
 						<UButton
 							:label="t('done')"
@@ -177,7 +182,7 @@ onUnmounted(() => {
 <i18n lang="json">
 {
 	"ja": {
-		"hide": "非表示",
+		"hide": "試してみる",
 		"next": "次へ",
 		"done": "終了",
 		"continue": "続ける",
