@@ -4,28 +4,57 @@ const { t } = useI18n({
 	useScope: 'local',
 })
 
-enum Actions {
-	Click = 1,
-}
-
 type TourStep = {
 	target: string
 	content: string
-	action?: Actions
 }
-const props = defineProps<{
+
+const { id, steps } = defineProps<{
+	id: string
 	steps: TourStep[]
 }>()
 
-const currentStep = ref(-1)
-const target = computed(() =>
-	currentStep.value < 0 || currentStep.value >= props.steps.length
-		? undefined
-		: document.querySelector(props.steps[currentStep.value].target),
-)
+const cookie = useCookie(`tour-${id}`)
 
-const getTargetBounding = () => {
-	const rect = target.value?.getBoundingClientRect()
+const currentStep = computed({
+	get() {
+		if (cookie.value === undefined || cookie.value === null) {
+			return 0
+		}
+		return parseInt(cookie.value)
+	},
+	set(newValue) {
+		cookie.value = newValue.toString()
+	},
+})
+
+const isEnabled = ref(false)
+
+const enabled = computed({
+	get() {
+		if (currentStep.value < 0 || currentStep.value >= steps.length) {
+			return false
+		}
+		return isEnabled.value
+	},
+	set(newValue) {
+		isEnabled.value = newValue
+	},
+})
+
+type Bounding = {
+	width: number
+	height: number
+	top: number
+	left: number
+}
+
+const getTargetBounding = (): Bounding | undefined => {
+	if (!enabled.value) {
+		return undefined
+	}
+	const target = document.querySelector(steps[currentStep.value].target)
+	const rect = target?.getBoundingClientRect()
 	if (!rect) {
 		return undefined
 	}
@@ -74,10 +103,10 @@ const handleHide = () => {
 }
 
 const handleDone = () => {
-	currentStep.value = props.steps.length
+	currentStep.value = steps.length
 }
 
-const bounding = ref()
+const bounding = ref<Bounding>()
 
 const interval = shallowRef()
 
@@ -85,7 +114,7 @@ const open = ref(true)
 
 onMounted(() => {
 	nextTick(() => {
-		currentStep.value = 0
+		enabled.value = true
 		interval.value = setInterval(() => {
 			bounding.value = getTargetBounding()
 		}, 100)
@@ -99,7 +128,11 @@ onUnmounted(() => {
 
 <template>
 	<Teleport to="body">
-		<UPopover v-if="bounding" v-model:open="open" :dismissible="false">
+		<UPopover
+			v-if="enabled && bounding"
+			v-model:open="open"
+			:dismissible="false"
+		>
 			<div
 				class="absolute border border-primary"
 				:style="{

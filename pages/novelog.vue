@@ -245,6 +245,7 @@ const importDataFromJson = async () => {
 
 <template>
 	<OnboardingTour
+		id="novelog"
 		:steps="[
 			{
 				target: `[data-tour-step='1']`,
