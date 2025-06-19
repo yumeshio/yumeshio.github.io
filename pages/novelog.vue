@@ -244,9 +244,19 @@ const importDataFromJson = async () => {
 </script>
 
 <template>
+	<OnboardingTour
+		:steps="[
+			{
+				target: `[data-tour-step='1']`,
+				content:
+					'ここにゲームのタイトルが表示されます。タイトルをクリックして変更できます。',
+			},
+		]"
+	/>
 	<UPopover>
 		<h1
 			class="text-center text-lg sm:text-xl lg:text-2xl font-bold mb-4 sm:mb-6 lg:mb-8"
+			data-tour-step="1"
 		>
 			{{ saveData.title.length > 0 ? saveData.title : t('clickToEditTitle') }}
 		</h1>
