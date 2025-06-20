@@ -323,6 +323,14 @@ const tourSteps = [
 			saveModalOpen.value = true
 		},
 	},
+	{
+		target: `[data-tour-step='export']`,
+		content: t('tour.export'),
+	},
+	{
+		target: `[data-tour-step='import']`,
+		content: t('tour.import'),
+	},
 ]
 </script>
 
@@ -644,6 +652,7 @@ const tourSteps = [
 				color="neutral"
 				leading-icon="i-lucide-upload"
 				class="basis-40 justify-center"
+				data-tour-step="import"
 				@click="importDataFromJson"
 			/>
 			<UButton
@@ -651,6 +660,7 @@ const tourSteps = [
 				variant="subtle"
 				leading-icon="i-lucide-download"
 				class="basis-40 justify-center"
+				data-tour-step="export"
 				@click="exportDataToJson"
 			/>
 		</div>
@@ -720,7 +730,9 @@ const tourSteps = [
 			"totalSaves": "在这里设置总存档数。也可以设置每页的行数和列数。行数为0表示不限行数，所有存档显示在同一页。",
 			"save": "点击此按钮存档。如果该存档已存在则会覆盖。",
 			"load": "点击此按钮读取存档。时间线上内容将被覆盖。",
-			"deleteSave": "点击此按钮删除存档。"
+			"deleteSave": "点击此按钮删除存档。",
+			"import": "点击此按钮导入本地存档文件（.json）。",
+			"export": "点击此按钮导出全部数据至JSON文件。"
 		}
 	}
 }
