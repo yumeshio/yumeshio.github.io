@@ -39,7 +39,7 @@ type SaveData = {
 
 const saveData = reactive<SaveData>({
 	items: [],
-	title: 'Click to edit title',
+	title: '',
 })
 
 watch(
@@ -571,7 +571,7 @@ const importDataFromJson = async () => {
 <i18n lang="json">
 {
 	"ja": {
-		"title": "ノベルログ",
+		"title": "ノベログ",
 		"importData": "データを読み込み",
 		"exportData": "データを保存",
 		"saveLoad": "保存 / 読み込み",
@@ -594,6 +594,30 @@ const importDataFromJson = async () => {
 		"saveAndLoad": "セーブ／ロード",
 		"settings": "設定",
 		"save": "セーブ"
+	},
+	"zh": {
+		"importData": "导入数据",
+		"exportData": "导出数据",
+		"saveLoad": "存档 / 读取",
+		"configs": "设置",
+		"totalSaves": "存档数",
+		"cols": "列数",
+		"rows": "行数",
+		"addItem": "添加",
+		"addChoice": "添加选项",
+		"description": "描述",
+		"choices": "选项",
+		"allItems": "历史记录",
+		"delete": "删除",
+		"load": "加载",
+		"submit": "提交",
+		"itemModalTitleAdd": "新增",
+		"itemModalTitleEdit": "编辑",
+		"clickToEditTitle": "点击标题进行编辑",
+		"enterTitle": "输入标题",
+		"saveAndLoad": "存档 / 读取",
+		"settings": "设置",
+		"save": "保存"
 	}
 }
 </i18n>
