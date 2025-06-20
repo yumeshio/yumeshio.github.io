@@ -189,6 +189,7 @@ onUnmounted(() => {
 			}"
 		>
 			<div
+				v-show="open"
 				class="absolute rounded border-dotted border-primary pointer-events-none animate-[highlight-target_1500ms_ease-in-out_infinite] z-5000"
 				:style="{
 					left: `${bounding.left}px`,
@@ -200,7 +201,10 @@ onUnmounted(() => {
 				}"
 			></div>
 			<template #content>
-				<UContainer class="bg-default text-default p-4 sm:p-6 md:p-8">
+				<UContainer
+					v-show="open"
+					class="bg-default text-default p-4 sm:p-6 md:p-8"
+				>
 					<div class="max-w-full">{{ currentStep?.content }}</div>
 					<div class="flex gap-2 sm:gap-4 justify-end mt-4 sm:mt-6 lg:mt-8">
 						<UButton
