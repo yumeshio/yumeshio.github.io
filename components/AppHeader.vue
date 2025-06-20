@@ -124,7 +124,7 @@ watch(route, () => {
 				<template #content>
 					<div class="flex flex-col">
 						<UButton
-							v-for="availableLocale in [...availableLocales]"
+							v-for="availableLocale in availableLocales"
 							:key="availableLocale.code"
 							:label="availableLocale.name"
 							color="neutral"
