@@ -187,6 +187,13 @@ onUnmounted(() => {
 		"done": "終了",
 		"continue": "続ける",
 		"tourIsHidden": "ガイドが一時的に非表示になっています。アプリをご自由にお試しください。"
+	},
+	"zh": {
+		"hide": "我要试试",
+		"next": "下一步",
+		"done": "结束引导",
+		"continue": "继续",
+		"tourIsHidden": "引导已暂时隐藏。您可以自由体验本应用。"
 	}
 }
 </i18n>
