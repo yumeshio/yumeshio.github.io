@@ -286,6 +286,41 @@ const tourSteps = [
 		target: `[data-tour-step='saveAndLoad']`,
 		content: t('tour.saveAndLoad'),
 	},
+	{
+		target: `[data-tour-step='totalSaves']`,
+		content: t('tour.totalSaves'),
+		onEnd: () => {
+			if (totalSaves.value < 1) {
+				totalSaves.value = 1
+			}
+		},
+	},
+	{
+		target: `[data-tour-step='save']`,
+		content: t('tour.save'),
+		onStart: () => {
+			saveModalOpen.value = true
+		},
+		onEnd: (el?: HTMLElement) => {
+			if (el) {
+				el.click()
+			}
+		},
+	},
+	{
+		target: `[data-tour-step='load']`,
+		content: t('tour.load'),
+		onStart: () => {
+			saveModalOpen.value = true
+		},
+	},
+	{
+		target: `[data-tour-step='deleteSave']`,
+		content: t('tour.deleteSave'),
+		onStart: () => {
+			saveModalOpen.value = true
+		},
+	},
 ]
 </script>
 
@@ -372,7 +407,11 @@ const tourSteps = [
 						/>
 						<template #content>
 							<div class="flex flex-col sm:flex-row gap-2 sm:gap-4 p-4">
-								<UFormField :label="t('totalSaves')" name="total">
+								<UFormField
+									:label="t('totalSaves')"
+									name="total"
+									data-tour-step="totalSaves"
+								>
 									<UInputNumber
 										v-model="totalSaves"
 										:placeholder="t('totalSaves')"
@@ -433,12 +472,14 @@ const tourSteps = [
 									v-if="saveItem"
 									:label="t('load')"
 									leading-icon="i-lucide-square-arrow-out-down-right"
+									data-tour-step="load"
 									@click="handleLoadSave(saveItem)"
 								/>
 								<UButton
 									:label="t('save')"
 									leading-icon="i-lucide-save"
 									variant="outline"
+									data-tour-step="save"
 									@click="
 										saveData.items[index] = {
 											items: items.map((item) => ({ ...item })),
@@ -451,6 +492,7 @@ const tourSteps = [
 									variant="outline"
 									leading-icon="i-lucide-trash"
 									color="warning"
+									data-tour-step="deleteSave"
 									@click="saveData.items[index] = undefined"
 								/>
 							</div>
@@ -672,7 +714,11 @@ const tourSteps = [
 			"addChoice": "点击此按钮添加选项。点击选项旁边的圆圈以设置选择的选项。",
 			"history": "点击提交之后，提交的内容会自动保存在历史记录中。如果下次需要输入相同的内容，可以直接从历史记录中加载。",
 			"editItem": "点击这个图标可以编辑该项目的内容。",
-			"saveAndLoad": "点击此按钮显示存档。可以将当先时间线上的内容保存至存档，也可以读取存档到当前时间线。这里的存档相当于游戏内的存档，并实现了过去的选项的可视化。"
+			"saveAndLoad": "点击此按钮显示存档。可以将当先时间线上的内容保存至存档，也可以读取存档到当前时间线。这里的存档相当于游戏内的存档，并实现了过去的选项的可视化。",
+			"totalSaves": "在这里设置总存档数。也可以设置每页的行数和列数。行数为0表示不限行数，所有存档显示在同一页。",
+			"save": "点击此按钮存档。如果该存档已存在则会覆盖。",
+			"load": "点击此按钮读取存档。时间线上内容将被覆盖。",
+			"deleteSave": "点击此按钮删除存档。"
 		}
 	}
 }
