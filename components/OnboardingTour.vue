@@ -11,9 +11,14 @@ type TourStep = {
 	onEnd?: (target?: HTMLElement) => void
 }
 
-const { id, steps } = defineProps<{
+const {
+	id,
+	steps,
+	introduction = '',
+} = defineProps<{
 	id: string
 	steps: TourStep[]
+	introduction?: string
 }>()
 
 const cookie = useCookie(`tour-${id}`, {
@@ -236,7 +241,8 @@ onUnmounted(() => {
 	</Teleport>
 	<UModal v-model:open="modalOpen">
 		<template #body>
-			<p class="text-center">{{ t('ifStartTour') }}</p>
+			<p class="mb-4">{{ introduction }}</p>
+			<p class="text-center font-bold">{{ t('ifStartTour') }}</p>
 		</template>
 		<template #footer>
 			<UButton

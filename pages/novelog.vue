@@ -348,7 +348,11 @@ const tourSteps = [
 </script>
 
 <template>
-	<OnboardingTour id="novelog" :steps="tourSteps" />
+	<OnboardingTour
+		id="novelog"
+		:steps="tourSteps"
+		:introduction="t('tour.introduction')"
+	/>
 	<UPopover>
 		<h1
 			class="text-center text-lg sm:text-xl lg:text-2xl font-bold mb-4 sm:mb-6 lg:mb-8"
@@ -734,6 +738,7 @@ const tourSteps = [
 		"settings": "设置",
 		"save": "保存",
 		"tour": {
+			"introduction": "本应用用于管理视觉小说游戏的进度和存档。以可视化的形式记录过去每一个选项的选择。",
 			"editTitle": "这里是游戏标题。点击可以编辑。",
 			"addItem": "点击此处以添加新的时间节点。一个时间节点是一项可以包含描述和选项的记录。",
 			"addChoice": "点击此按钮添加选项。点击选项旁边的圆圈以设置选择的选项。",
