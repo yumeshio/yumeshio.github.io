@@ -282,6 +282,10 @@ const tourSteps = [
 			itemModalOpen.value = false
 		},
 	},
+	{
+		target: `[data-tour-step='saveAndLoad']`,
+		content: t('tour.saveAndLoad'),
+	},
 ]
 </script>
 
@@ -347,9 +351,13 @@ const tourSteps = [
 					color="secondary"
 					leading-icon="i-lucide-save"
 					class="basis-40 justify-center"
+					data-tour-step="saveAndLoad"
 				/>
 				<template #body>
-					<UCollapsible class="mb-4 bg-muted rounded">
+					<UCollapsible
+						class="mb-4 bg-muted rounded"
+						:default-open="totalSaves < 1"
+					>
 						<UButton
 							:label="t('settings')"
 							variant="soft"
@@ -663,7 +671,8 @@ const tourSteps = [
 			"addItem": "点击此处以添加新的时间节点。一个时间节点是一项可以包含描述和选项的记录。",
 			"addChoice": "点击此按钮添加选项。点击选项旁边的圆圈以设置选择的选项。",
 			"history": "点击提交之后，提交的内容会自动保存在历史记录中。如果下次需要输入相同的内容，可以直接从历史记录中加载。",
-			"editItem": "点击这个图标可以编辑该项目的内容。"
+			"editItem": "点击这个图标可以编辑该项目的内容。",
+			"saveAndLoad": "点击此按钮显示存档。可以将当先时间线上的内容保存至存档，也可以读取存档到当前时间线。这里的存档相当于游戏内的存档，并实现了过去的选项的可视化。"
 		}
 	}
 }
