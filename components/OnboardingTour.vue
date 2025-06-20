@@ -45,16 +45,19 @@ const enabled = computed({
 })
 
 const currentStep = computed(() => {
-	if (!enabled.value) {
+	if (currentStepId.value < 0 || currentStepId.value >= steps.length) {
 		return undefined
 	}
 	return steps[currentStepId.value]
 })
 
 watch(currentStep, (newValue, oldValue) => {
+	isEnabled.value = false
 	if (oldValue && oldValue.onEnd) {
 		const target = document.querySelector<HTMLElement>(oldValue.target)
-		oldValue.onEnd(target ?? undefined)
+		nextTick(() => {
+			oldValue.onEnd!(target ?? undefined)
+		})
 	}
 	if (newValue && newValue.onStart) {
 		const target = document.querySelector<HTMLElement>(newValue.target)
@@ -62,6 +65,9 @@ watch(currentStep, (newValue, oldValue) => {
 			newValue.onStart!(target ?? undefined)
 		})
 	}
+	nextTick(() => {
+		isEnabled.value = true
+	})
 })
 
 type Bounding = {

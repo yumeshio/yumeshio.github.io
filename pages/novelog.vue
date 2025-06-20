@@ -55,6 +55,7 @@ watch(
 const totalSaves = ref(0)
 const saveCols = ref(1)
 const saveRows = ref(0)
+const saveConfigOpen = ref(totalSaves.value < 1)
 
 const savesPerPage = computed(() => {
 	if (saveRows.value > 0) {
@@ -263,10 +264,9 @@ const tourSteps = [
 	{
 		target: `[data-tour-step='2']`,
 		content: t('tour.addItem'),
-		onEnd: (el?: HTMLElement) => {
-			if (el) {
-				el.click()
-			}
+		onEnd: () => {
+			itemModalOpen.value = true
+			state.description = 'Input description'
 		},
 	},
 	{
@@ -291,6 +291,9 @@ const tourSteps = [
 	{
 		target: `[data-tour-step='totalSaves']`,
 		content: t('tour.totalSaves'),
+		onStart: () => {
+			saveConfigOpen.value = true
+		},
 		onEnd: () => {
 			if (totalSaves.value < 1) {
 				totalSaves.value = 1
@@ -400,8 +403,8 @@ const tourSteps = [
 				/>
 				<template #body>
 					<UCollapsible
+						v-model:open="saveConfigOpen"
 						class="mb-4 bg-muted rounded"
-						:default-open="totalSaves < 1"
 					>
 						<UButton
 							:label="t('settings')"
