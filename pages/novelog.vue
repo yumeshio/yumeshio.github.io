@@ -292,6 +292,7 @@ const tourSteps = [
 		target: `[data-tour-step='totalSaves']`,
 		content: t('tour.totalSaves'),
 		onStart: () => {
+			saveModalOpen.value = true
 			saveConfigOpen.value = true
 		},
 		onEnd: () => {
@@ -329,10 +330,18 @@ const tourSteps = [
 	{
 		target: `[data-tour-step='export']`,
 		content: t('tour.export'),
+		onStart: () => {
+			saveModalOpen.value = false
+			itemModalOpen.value = false
+		},
 	},
 	{
 		target: `[data-tour-step='import']`,
 		content: t('tour.import'),
+		onStart: () => {
+			saveModalOpen.value = false
+			itemModalOpen.value = false
+		},
 	},
 ]
 </script>
