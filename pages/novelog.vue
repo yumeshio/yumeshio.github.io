@@ -71,9 +71,20 @@ watch(totalSaves, () => {
 	}
 })
 
-const items = ref<ChoiceItem[]>([])
+const items = ref<ChoiceItem[]>([
+	{
+		description: 'This is description',
+		choices: ['Choice1', 'Choice2'],
+		selectedChoice: 0,
+	},
+])
 
-const allItems = ref<Omit<ChoiceItem, 'selectedChoice'>[]>([])
+const allItems = ref<Omit<ChoiceItem, 'selectedChoice'>[]>([
+	{
+		description: 'This is description',
+		choices: ['Choice1', 'Choice2'],
+	},
+])
 
 const handleAddItem = (activeItem: number) => {
 	itemModalOpen.value = true
@@ -256,6 +267,21 @@ const tourSteps = [
 			}
 		},
 	},
+	{
+		target: `[data-tour-step='3']`,
+		content: t('tour.addChoice'),
+	},
+	{
+		target: `[data-tour-step='history']`,
+		content: t('tour.history'),
+	},
+	{
+		target: `[data-tour-step='editItem']`,
+		content: t('tour.editItem'),
+		onStart: () => {
+			itemModalOpen.value = false
+		},
+	},
 ]
 </script>
 
@@ -295,6 +321,7 @@ const tourSteps = [
 				class="rounded-full"
 				color="neutral"
 				variant="soft"
+				data-tour-step="editItem"
 				@click="handleAddItem(items.indexOf(item))"
 			/>
 		</template>
@@ -494,6 +521,7 @@ const tourSteps = [
 								leading-icon="i-lucide-plus"
 								color="neutral"
 								variant="soft"
+								data-tour-step="3"
 								@click="state.choices!.push('')"
 							/>
 						</UFormField>
@@ -504,6 +532,7 @@ const tourSteps = [
 									color="neutral"
 									variant="subtle"
 									leading-icon="i-lucide-history"
+									data-tour-step="history"
 								/>
 								<template #body>
 									<UCard
@@ -631,7 +660,10 @@ const tourSteps = [
 		"save": "保存",
 		"tour": {
 			"editTitle": "这里是游戏标题。点击可以编辑。",
-			"addItem": "点击此处以添加新的时间节点。一个时间节点是一项可以包含描述和选项的记录。"
+			"addItem": "点击此处以添加新的时间节点。一个时间节点是一项可以包含描述和选项的记录。",
+			"addChoice": "点击此按钮添加选项。点击选项旁边的圆圈以设置选择的选项。",
+			"history": "点击提交之后，提交的内容会自动保存在历史记录中。如果下次需要输入相同的内容，可以直接从历史记录中加载。",
+			"editItem": "点击这个图标可以编辑该项目的内容。"
 		}
 	}
 }

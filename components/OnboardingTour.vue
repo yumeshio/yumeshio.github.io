@@ -184,7 +184,7 @@ onUnmounted(() => {
 			></div>
 			<template #content>
 				<UContainer class="bg-default text-default p-4 sm:p-6 md:p-8">
-					<div class="max-w-full">{{ currentStep?.content }}{{ bounding }}</div>
+					<div class="max-w-full">{{ currentStep?.content }}</div>
 					<div class="flex gap-2 sm:gap-4 justify-end mt-4 sm:mt-6 lg:mt-8">
 						<UButton
 							:label="t('done')"
