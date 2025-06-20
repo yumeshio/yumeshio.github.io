@@ -483,7 +483,7 @@ const tourSteps = [
 							class="bg-default text-default border border-default"
 						>
 							<p class="text-sm text-muted">
-								No.{{ index + 1 }} ({{ page }} -
+								No.{{ (page - 1) * savesPerPage + index + 1 }} ({{ page }} -
 								{{ (index % savesPerPage) + 1 }})
 							</p>
 							<p>
@@ -526,6 +526,7 @@ const tourSteps = [
 						</UCard>
 					</div>
 					<UPagination
+						v-if="totalSaves > savesPerPage"
 						v-model:page="page"
 						:total="totalSaves"
 						:items-per-page="savesPerPage"
