@@ -32,6 +32,7 @@ export default defineNuxtConfig({
 	},
 	i18n: {
 		baseUrl: '/',
+		strategy: 'no_prefix',
 		defaultLocale: 'ja',
 		locales: [
 			{
@@ -39,6 +40,12 @@ export default defineNuxtConfig({
 				language: 'ja-JP',
 				name: '日本語',
 				file: 'ja.json',
+			},
+			{
+				code: 'zh',
+				language: 'zh-CN',
+				name: '简体中文',
+				file: 'zh.json',
 			},
 		],
 	},

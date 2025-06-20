@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 import type { LocationQuery } from 'vue-router'
-const { t } = useI18n()
+const { t, locale, locales, setLocale } = useI18n()
+const availableLocales = computed(() => {
+	return locales.value.filter((i) => i.code !== locale.value)
+})
 const { resolve } = useRouter()
 const viewport = useViewport()
 const orientation = computed(() => {
@@ -102,6 +105,50 @@ watch(route, () => {
 </script>
 
 <template>
+	<div
+		class="px-4 sm:px-6 lg:px-8 py-2 sm:py-4 flex flex-row-reverse sm:flex-col bg-muted sm:bg-inherit"
+	>
+		<div class="flex justify-end ml-auto">
+			<UPopover
+				:content="{
+					align: 'end',
+				}"
+			>
+				<UButton
+					leading-icon="i-lucide-languages"
+					variant="ghost"
+					color="neutral"
+					size="md"
+					class="size-10 justify-center"
+				/>
+				<template #content>
+					<div class="flex flex-col">
+						<UButton
+							v-for="availableLocale in [...availableLocales]"
+							:key="availableLocale.code"
+							:label="availableLocale.name"
+							color="neutral"
+							variant="ghost"
+							@click="setLocale(availableLocale.code)"
+						/>
+					</div>
+				</template>
+			</UPopover>
+			<UButton
+				ref="openButton"
+				type="button"
+				icon="i-lucide-align-justify"
+				size="md"
+				variant="ghost"
+				class="sm:hidden size-10 justify-center pointer-events-auto cursor-pointer"
+				@click="open = !open"
+			/>
+		</div>
+		<div class="flex gap-1 items-center sm:mx-auto">
+			<NuxtImg src="/favicon.png" width="40" height="40" />
+			<span class="font-bold text-primary text-lg sm:text-xl">夢見草の栞</span>
+		</div>
+	</div>
 	<UCollapsible
 		v-model:open="open"
 		class="flex flex-col mb-4 sm:mb-6 lg:mb-8"
@@ -109,24 +156,6 @@ watch(route, () => {
 			content: 'sm:overflow-visible',
 		}"
 	>
-		<div
-			class="px-4 sm:px-6 lg:px-8 py-2 sm:py-4 flex justify-between sm:justify-center bg-muted sm:bg-inherit pointer-events-none"
-		>
-			<div class="flex gap-1 items-center">
-				<NuxtImg src="/favicon.png" width="40" height="40" />
-				<span class="font-bold text-primary text-lg sm:text-xl"
-					>夢見草の栞</span
-				>
-			</div>
-			<UButton
-				ref="openButton"
-				type="button"
-				icon="lucide:align-justify"
-				size="sm"
-				variant="ghost"
-				class="sm:hidden w-10 justify-center pointer-events-auto cursor-pointer"
-			/>
-		</div>
 		<template #content>
 			<div>
 				<UNavigationMenu
