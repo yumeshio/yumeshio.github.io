@@ -202,7 +202,9 @@ onUnmounted(() => {
 					<div class="flex gap-2 sm:gap-4 justify-end mt-4 sm:mt-6 lg:mt-8">
 						<UButton
 							:label="t('done')"
-							color="neutral"
+							:color="
+								currentStepId < steps.length - 1 ? 'secondary' : 'primary'
+							"
 							class="mr-auto px-4"
 							@click="handleDone"
 						/>
@@ -214,6 +216,7 @@ onUnmounted(() => {
 							@click="handleHide"
 						/>
 						<UButton
+							v-if="currentStepId < steps.length - 1"
 							:label="t('next')"
 							variant="subtle"
 							class="px-4"
