@@ -728,7 +728,7 @@ const tourSteps = [
 		"choices": "选项",
 		"allItems": "历史记录",
 		"delete": "删除",
-		"load": "加载",
+		"load": "读取",
 		"submit": "提交",
 		"itemModalTitleAdd": "新增",
 		"itemModalTitleEdit": "编辑",
