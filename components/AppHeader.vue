@@ -5,6 +5,7 @@ const { t, locale, locales, setLocale } = useI18n()
 const availableLocales = computed(() => {
 	return locales.value.filter((i) => i.code !== locale.value)
 })
+const languagePopupOpen = ref(false)
 const { resolve } = useRouter()
 const viewport = useViewport()
 const orientation = computed(() => {
@@ -112,6 +113,7 @@ watch(route, () => {
 	>
 		<div class="flex justify-end ml-auto">
 			<UPopover
+				v-model:open="languagePopupOpen"
 				:content="{
 					align: 'end',
 				}"
@@ -131,7 +133,12 @@ watch(route, () => {
 							:label="availableLocale.name"
 							color="neutral"
 							variant="ghost"
-							@click="setLocale(availableLocale.code)"
+							@click="
+								() => {
+									setLocale(availableLocale.code)
+									languagePopupOpen = false
+								}
+							"
 						/>
 					</div>
 				</template>
