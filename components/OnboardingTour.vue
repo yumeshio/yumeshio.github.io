@@ -7,6 +7,8 @@ const { t } = useI18n({
 type TourStep = {
 	target: string
 	content: string
+	onStart: (target?: HTMLElement) => void
+	onEnd: (target?: HTMLElement) => void
 }
 
 const { id, steps } = defineProps<{
@@ -16,7 +18,7 @@ const { id, steps } = defineProps<{
 
 const cookie = useCookie(`tour-${id}`)
 
-const currentStep = computed({
+const currentStepId = computed({
 	get() {
 		if (cookie.value === undefined || cookie.value === null) {
 			return 0
@@ -32,7 +34,7 @@ const isEnabled = ref(false)
 
 const enabled = computed({
 	get() {
-		if (currentStep.value < 0 || currentStep.value >= steps.length) {
+		if (currentStepId.value < 0 || currentStepId.value >= steps.length) {
 			return false
 		}
 		return isEnabled.value
@@ -40,6 +42,26 @@ const enabled = computed({
 	set(newValue) {
 		isEnabled.value = newValue
 	},
+})
+
+const currentStep = computed(() => {
+	if (!enabled.value) {
+		return undefined
+	}
+	return steps[currentStepId.value]
+})
+
+watch(currentStep, (newValue, oldValue) => {
+	if (oldValue) {
+		const target = document.querySelector<HTMLElement>(oldValue.target)
+		oldValue.onEnd(target ?? undefined)
+	}
+	if (newValue) {
+		const target = document.querySelector<HTMLElement>(newValue.target)
+		nextTick(() => {
+			newValue.onStart(target ?? undefined)
+		})
+	}
 })
 
 type Bounding = {
@@ -50,10 +72,10 @@ type Bounding = {
 }
 
 const getTargetBounding = (): Bounding | undefined => {
-	if (!enabled.value) {
+	if (!enabled.value || !currentStep.value) {
 		return undefined
 	}
-	const target = document.querySelector(steps[currentStep.value].target)
+	const target = document.querySelector(currentStep.value.target)
 	const rect = target?.getBoundingClientRect()
 	if (!rect) {
 		return undefined
@@ -67,7 +89,7 @@ const getTargetBounding = (): Bounding | undefined => {
 }
 
 const nextStep = () => {
-	currentStep.value++
+	currentStepId.value++
 }
 
 const handleContinue = (e: MouseEvent) => {
@@ -103,7 +125,7 @@ const handleHide = () => {
 }
 
 const handleDone = () => {
-	currentStep.value = steps.length
+	currentStepId.value = steps.length
 }
 
 const bounding = ref<Bounding>()
@@ -151,7 +173,7 @@ onUnmounted(() => {
 			></div>
 			<template #content>
 				<UContainer class="bg-default text-default p-4 sm:p-6 md:p-8">
-					<div class="max-w-full">{{ steps[currentStep].content }}</div>
+					<div class="max-w-full">{{ currentStep?.content }}</div>
 					<div class="flex gap-2 sm:gap-4 justify-end mt-4 sm:mt-6 lg:mt-8">
 						<UButton
 							:label="t('done')"
