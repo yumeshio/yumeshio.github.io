@@ -80,12 +80,23 @@ const getTargetBounding = (): Bounding | undefined => {
 	if (!rect) {
 		return undefined
 	}
-	return {
-		width: rect.width,
-		height: rect.height,
-		top: rect.top + window.scrollY,
-		left: rect.left + window.scrollX,
+	const b = {
+		width: rect.width + 4,
+		height: rect.height + 4,
+		top: rect.top + window.scrollY - 2,
+		left: rect.left + window.scrollX - 2,
 	}
+	if (b.left < 4) {
+		const offset = 4 - b.left
+		b.width -= 2 * offset
+		b.left = 4
+	}
+	if (b.top < 4) {
+		const offset = 4 - b.top
+		b.top -= 2 * offset
+		b.top = 4
+	}
+	return b
 }
 
 const nextStep = () => {
@@ -161,7 +172,7 @@ onUnmounted(() => {
 			}"
 		>
 			<div
-				class="absolute border border-primary pointer-events-none"
+				class="absolute rounded border-dotted border-primary pointer-events-none animate-[highlight-target_1500ms_ease-in-out_infinite] z-5000"
 				:style="{
 					left: `${bounding.left}px`,
 					top: `${bounding.top}px`,
@@ -173,7 +184,7 @@ onUnmounted(() => {
 			></div>
 			<template #content>
 				<UContainer class="bg-default text-default p-4 sm:p-6 md:p-8">
-					<div class="max-w-full">{{ currentStep?.content }}</div>
+					<div class="max-w-full">{{ currentStep?.content }}{{ bounding }}</div>
 					<div class="flex gap-2 sm:gap-4 justify-end mt-4 sm:mt-6 lg:mt-8">
 						<UButton
 							:label="t('done')"
@@ -219,3 +230,19 @@ onUnmounted(() => {
 	}
 }
 </i18n>
+
+<style lang="css">
+@keyframes highlight-target {
+	0%,
+	100% {
+		border-width: 1px;
+		filter: brightness(90%);
+		backdrop-filter: brightness(90%);
+	}
+	50% {
+		border-width: 2px;
+		filter: brightness(110%);
+		backdrop-filter: brightness(110%);
+	}
+}
+</style>
