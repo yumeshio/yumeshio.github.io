@@ -23,74 +23,76 @@ const hasTag = (query: LocationQuery, tag: string) => {
 	return false
 }
 const route = useRoute()
-const items = computed((): NavigationMenuItem[] => [
-	{
-		label: t('home'),
-		icon: 'i-lucide-house',
-		class: 'px-4 sm:px-2.5',
-		to: resolve({
-			path: '/',
-		}),
-	},
-	{
-		label: t('diary'),
-		icon: 'i-lucide-book',
-		class: 'px-4 sm:px-2.5',
-		to: resolve({
-			path: '/diary',
-		}),
-	},
-	{
-		label: t('blog'),
-		icon: 'i-lucide-book',
-		class: 'px-4 sm:px-2.5',
-		to: resolve({
-			path: '/blog',
-		}),
-		children: [
-			{
-				label: t('devBlog'),
-				icon: 'i-lucide-book',
-				to: resolve({
-					path: '/blog',
-					query: { tag: 'dev' },
-				}),
-				active: route.path.includes('/blog') && hasTag(route.query, 'dev'),
-			},
-			{
-				label: t('gameBlog'),
-				icon: 'i-lucide-book',
-				to: resolve({
-					path: '/blog',
-					query: { tag: 'game' },
-				}),
-				active: route.path.includes('/blog') && hasTag(route.query, 'game'),
-			},
-		],
-	},
-	{
-		label: t('library'),
-		icon: 'i-lucide-book',
-		class: 'px-4 sm:px-2.5',
-		to: resolve({
-			path: '/library',
-		}),
-	},
-	{
-		label: t('applications'),
-		icon: 'i-lucide-panels-top-left',
-		class: 'px-4 sm:px-2.5',
-		children: [
-			{
-				label: t('novelog'),
-				icon: 'i-lucide-book',
-				description: t('novelogDescription'),
-				to: resolve({ path: '/novelog' }),
-			},
-		],
-		active: route.path.includes('/novelog'),
-	},
-])
+const items = computed((): NavigationMenuItem[] =>
+	[
+		{
+			label: t('home'),
+			icon: 'i-lucide-house',
+			class: 'px-4 sm:px-2.5',
+			to: resolve({
+				path: '/',
+			}),
+		},
+		{
+			label: t('diary'),
+			icon: 'i-lucide-book',
+			class: 'px-4 sm:px-2.5',
+			to: resolve({
+				path: '/diary',
+			}),
+		},
+		{
+			label: t('blog'),
+			icon: 'i-lucide-book',
+			class: 'px-4 sm:px-2.5',
+			to: resolve({
+				path: '/blog',
+			}),
+			children: [
+				{
+					label: t('devBlog'),
+					icon: 'i-lucide-book',
+					to: resolve({
+						path: '/blog',
+						query: { tag: 'dev' },
+					}),
+					active: route.path.includes('/blog') && hasTag(route.query, 'dev'),
+				},
+				{
+					label: t('gameBlog'),
+					icon: 'i-lucide-book',
+					to: resolve({
+						path: '/blog',
+						query: { tag: 'game' },
+					}),
+					active: route.path.includes('/blog') && hasTag(route.query, 'game'),
+				},
+			],
+		},
+		{
+			label: t('library'),
+			icon: 'i-lucide-book',
+			class: 'px-4 sm:px-2.5',
+			to: resolve({
+				path: '/library',
+			}),
+		},
+		{
+			label: t('applications'),
+			icon: 'i-lucide-panels-top-left',
+			class: 'px-4 sm:px-2.5',
+			children: [
+				{
+					label: t('novelog'),
+					icon: 'i-lucide-book',
+					description: t('novelogDescription'),
+					to: resolve({ path: '/novelog' }),
+				},
+			],
+			active: route.path.includes('/novelog'),
+		},
+	].slice(0, 1),
+)
 const open = ref<boolean>(false)
 watch(viewport.breakpoint, () => {
 	if (viewport.isGreaterOrEquals('sm')) {
