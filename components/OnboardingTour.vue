@@ -16,7 +16,9 @@ const { id, steps } = defineProps<{
 	steps: TourStep[]
 }>()
 
-const cookie = useCookie(`tour-${id}`)
+const cookie = useCookie(`tour-${id}`, {
+	maxAge: 365 * 24 * 60 * 60, // expires in 1 year
+})
 
 const currentStepId = computed({
 	get() {
