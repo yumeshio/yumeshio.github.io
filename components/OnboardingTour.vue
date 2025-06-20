@@ -7,8 +7,8 @@ const { t } = useI18n({
 type TourStep = {
 	target: string
 	content: string
-	onStart: (target?: HTMLElement) => void
-	onEnd: (target?: HTMLElement) => void
+	onStart?: (target?: HTMLElement) => void
+	onEnd?: (target?: HTMLElement) => void
 }
 
 const { id, steps } = defineProps<{
@@ -52,14 +52,14 @@ const currentStep = computed(() => {
 })
 
 watch(currentStep, (newValue, oldValue) => {
-	if (oldValue) {
+	if (oldValue && oldValue.onEnd) {
 		const target = document.querySelector<HTMLElement>(oldValue.target)
 		oldValue.onEnd(target ?? undefined)
 	}
-	if (newValue) {
+	if (newValue && newValue.onStart) {
 		const target = document.querySelector<HTMLElement>(newValue.target)
 		nextTick(() => {
-			newValue.onStart(target ?? undefined)
+			newValue.onStart!(target ?? undefined)
 		})
 	}
 })
