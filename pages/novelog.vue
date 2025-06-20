@@ -76,16 +76,16 @@ watch(totalSaves, () => {
 
 const items = ref<ChoiceItem[]>([
 	{
-		description: 'This is description',
-		choices: ['Choice1', 'Choice2'],
+		description: t('dummy.description1'),
+		choices: [t('dummy.choice1'), t('dummy.choice2'), t('dummy.choice3')],
 		selectedChoice: 0,
 	},
 ])
 
 const allItems = ref<Omit<ChoiceItem, 'selectedChoice'>[]>([
 	{
-		description: 'This is description',
-		choices: ['Choice1', 'Choice2'],
+		description: t('dummy.description2'),
+		choices: [t('dummy.choice1'), t('dummy.choice2'), t('dummy.choice3')],
 	},
 ])
 
@@ -265,8 +265,9 @@ const tourSteps = [
 		target: `[data-tour-step='2']`,
 		content: t('tour.addItem'),
 		onEnd: () => {
-			itemModalOpen.value = true
-			state.description = 'Input description'
+			handleAddItem(-1)
+			state.description = t('dummy.description3')
+			state.choices = [t('dummy.choice1'), t('dummy.choice2')]
 		},
 	},
 	{
@@ -745,6 +746,14 @@ const tourSteps = [
 			"deleteSave": "点击此按钮删除存档。",
 			"import": "点击此按钮导入本地存档文件（.json）。",
 			"export": "点击此按钮导出全部数据至JSON文件。"
+		},
+		"dummy": {
+			"description1": "这是一段描述文本",
+			"description2": "这是一段描述文本",
+			"description3": "这是一段描述文本",
+			"choice1": "选项A",
+			"choice2": "选项B",
+			"choice3": "选项C"
 		}
 	}
 }
