@@ -7,8 +7,8 @@ const { t } = useI18n({
 type TourStep = {
 	target: string
 	content: string
-	onStart?: (target: HTMLElement) => void
-	onEnd?: (target: HTMLElement) => void
+	onStart?: (target?: HTMLElement) => void
+	onEnd?: (target?: HTMLElement) => void
 }
 
 const { id, steps } = defineProps<{

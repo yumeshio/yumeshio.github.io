@@ -250,8 +250,10 @@ const tourSteps = [
 	{
 		target: `[data-tour-step='2']`,
 		content: t('tour.addItem'),
-		onEnd: (el: HTMLElement) => {
-			el.click()
+		onEnd: (el?: HTMLElement) => {
+			if (el) {
+				el.click()
+			}
 		},
 	},
 ]
