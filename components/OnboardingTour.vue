@@ -52,7 +52,7 @@ const currentStep = computed(() => {
 })
 
 watch(currentStep, (newValue, oldValue) => {
-	isEnabled.value = false
+	enabled.value = false
 	if (oldValue && oldValue.onEnd) {
 		const target = document.querySelector<HTMLElement>(oldValue.target)
 		nextTick(() => {
@@ -66,7 +66,7 @@ watch(currentStep, (newValue, oldValue) => {
 		})
 	}
 	nextTick(() => {
-		isEnabled.value = true
+		enabled.value = true
 	})
 })
 
