@@ -30,7 +30,15 @@ const currentStepId = computed({
 	},
 })
 
+const currentStep = computed(() => {
+	if (currentStepId.value < 0 || currentStepId.value >= steps.length) {
+		return undefined
+	}
+	return steps[currentStepId.value]
+})
+
 const isEnabled = ref(false)
+const modalOpen = ref(false)
 
 const enabled = computed({
 	get() {
@@ -42,13 +50,6 @@ const enabled = computed({
 	set(newValue) {
 		isEnabled.value = newValue
 	},
-})
-
-const currentStep = computed(() => {
-	if (currentStepId.value < 0 || currentStepId.value >= steps.length) {
-		return undefined
-	}
-	return steps[currentStepId.value]
 })
 
 watch(currentStep, (newValue, oldValue) => {
@@ -151,12 +152,19 @@ const interval = shallowRef()
 
 const open = ref(true)
 
-onMounted(() => {
+const startTour = () => {
 	nextTick(() => {
 		enabled.value = true
 		interval.value = setInterval(() => {
 			bounding.value = getTargetBounding()
 		}, 100)
+	})
+	modalOpen.value = false
+}
+
+onMounted(() => {
+	nextTick(() => {
+		modalOpen.value = !!currentStep.value
 	})
 })
 
@@ -216,6 +224,30 @@ onUnmounted(() => {
 			</template>
 		</UPopover>
 	</Teleport>
+	<UModal v-model:open="modalOpen">
+		<template #body>
+			<p class="text-center">{{ t('ifStartTour') }}</p>
+		</template>
+		<template #footer>
+			<UButton
+				:label="t('no')"
+				color="neutral"
+				variant="subtle"
+				class="grow justify-center"
+				@click="
+					() => {
+						handleDone()
+						modalOpen = false
+					}
+				"
+			/>
+			<UButton
+				:label="t('yes')"
+				class="grow justify-center"
+				@click="startTour"
+			/>
+		</template>
+	</UModal>
 </template>
 
 <i18n lang="json">
@@ -232,7 +264,10 @@ onUnmounted(() => {
 		"next": "下一步",
 		"done": "结束引导",
 		"continue": "继续",
-		"tourIsHidden": "引导已暂时隐藏。您可以自由体验本应用。"
+		"tourIsHidden": "引导已暂时隐藏。您可以自由体验本应用。",
+		"ifStartTour": "要开始新用户引导吗？",
+		"yes": "是",
+		"no": "否"
 	}
 }
 </i18n>
