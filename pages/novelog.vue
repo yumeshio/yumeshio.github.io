@@ -68,6 +68,8 @@ const page = ref(1)
 watch(totalSaves, () => {
 	if (saveData.items.length < totalSaves.value) {
 		saveData.items.push(...Array(totalSaves.value - saveData.items.length))
+	} else {
+		saveData.items.splice(totalSaves.value)
 	}
 })
 
