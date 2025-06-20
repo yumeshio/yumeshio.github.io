@@ -241,19 +241,21 @@ const importDataFromJson = async () => {
 	}
 	input.click()
 }
+
+const tourSteps = [
+	{
+		target: `[data-tour-step='1']`,
+		content: t('tour.editTitle'),
+	},
+	{
+		target: `[data-tour-step='2']`,
+		content: t('tour.addItem'),
+	},
+]
 </script>
 
 <template>
-	<OnboardingTour
-		id="novelog"
-		:steps="[
-			{
-				target: `[data-tour-step='1']`,
-				content:
-					'ここにゲームのタイトルが表示されます。タイトルをクリックして変更できます。',
-			},
-		]"
-	/>
+	<OnboardingTour id="novelog" :steps="tourSteps" />
 	<UPopover>
 		<h1
 			class="text-center text-lg sm:text-xl lg:text-2xl font-bold mb-4 sm:mb-6 lg:mb-8"
@@ -437,6 +439,7 @@ const importDataFromJson = async () => {
 					:label="t('addItem')"
 					leading-icon="i-lucide-circle-plus"
 					class="basis-40 justify-center"
+					data-tour-step="2"
 					@click="handleAddItem(-1)"
 				/>
 				<template #body>
@@ -593,7 +596,10 @@ const importDataFromJson = async () => {
 		"enterTitle": "タイトルを入力",
 		"saveAndLoad": "セーブ／ロード",
 		"settings": "設定",
-		"save": "セーブ"
+		"save": "セーブ",
+		"tour": {
+			"editTitle": "ここにゲームのタイトルが表示されます。タイトルをクリックして変更できます。"
+		}
 	},
 	"zh": {
 		"importData": "导入数据",
@@ -617,7 +623,11 @@ const importDataFromJson = async () => {
 		"enterTitle": "输入标题",
 		"saveAndLoad": "存档 / 读取",
 		"settings": "设置",
-		"save": "保存"
+		"save": "保存",
+		"tour": {
+			"editTitle": "这里是游戏标题。点击可以编辑。",
+			"addItem": "点击此处以添加新的时间节点。一个时间节点是一项可以包含描述和选项的记录。"
+		}
 	}
 }
 </i18n>

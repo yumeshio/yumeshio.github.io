@@ -139,7 +139,7 @@ onUnmounted(() => {
 			}"
 		>
 			<div
-				class="absolute border border-primary"
+				class="absolute border border-primary pointer-events-none"
 				:style="{
 					left: `${bounding.left}px`,
 					top: `${bounding.top}px`,
