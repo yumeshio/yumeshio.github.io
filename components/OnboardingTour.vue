@@ -155,6 +155,7 @@ const interval = shallowRef()
 const open = ref(true)
 
 const startTour = () => {
+	currentStepId.value = 0
 	nextTick(() => {
 		enabled.value = true
 		interval.value = setInterval(() => {
