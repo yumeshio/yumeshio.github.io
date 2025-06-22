@@ -6,6 +6,10 @@ const { t } = useI18n({
 	useScope: 'local',
 })
 
+useHead({
+	title: t('title'),
+})
+
 const schema = z.object({
 	description: z.string().optional(),
 	choices: z.array(z.string()),
@@ -39,7 +43,7 @@ type SaveData = {
 
 const saveData = reactive<SaveData>({
 	items: [],
-	title: '',
+	title: t('title'),
 })
 
 watch(
@@ -715,6 +719,7 @@ const tourSteps = [
 		}
 	},
 	"zh": {
+		"title": "视觉小说攻略助手",
 		"importData": "导入数据",
 		"exportData": "导出数据",
 		"saveLoad": "存档 / 读取",

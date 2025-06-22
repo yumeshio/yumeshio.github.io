@@ -14,6 +14,9 @@ const locales = _locales as Record<string, Locale<Messages>>
 const { locale } = useI18n()
 const i18nHead = useLocaleHead()
 useHead(() => ({
+	titleTemplate(title) {
+		return `${title} - 夢見草の栞`
+	},
 	htmlAttrs: {
 		lang: i18nHead.value.htmlAttrs.lang,
 	},
