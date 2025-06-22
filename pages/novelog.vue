@@ -566,7 +566,6 @@ const tourSteps = [
 								<UInput
 									v-model="state.choices![index]"
 									type="text"
-									:placeholder="'Choice ' + (index + 1)"
 									:class="index > 0 ? 'mt-2' : ''"
 									class="grow"
 								/>
