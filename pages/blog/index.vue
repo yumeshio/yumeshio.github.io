@@ -34,34 +34,36 @@ watch(tags, () => {
 </script>
 
 <template>
-	<h1>
-		{{
-			computed(() => {
-				if (tags?.includes('dev')) {
-					return $t('devBlog')
-				} else if (tags?.includes('game')) {
-					return $t('gameBlog')
-				}
-				return $t('blog')
-			})
-		}}
-	</h1>
-	<UContainer>
-		<UCard
-			v-for="post in data"
-			:key="post.path"
-			class="relative hover:bg-elevated"
-		>
-			<NuxtLink :to="getPostUrl(post)" class="absolute inset-0" />
-			<div class="flex flex-col md:flex-row items-center">
-				<NuxtImg src="/favicon.png" class="w-full md:min-w-40 md:max-w-1/3" />
-				<div>
-					<h2 class="font-bold">{{ post.title }}</h2>
-					<p class="line-clamp-5 overflow-hidden">
-						{{ post.description }}
-					</p>
+	<div>
+		<h1>
+			{{
+				computed(() => {
+					if (tags?.includes('dev')) {
+						return $t('devBlog')
+					} else if (tags?.includes('game')) {
+						return $t('gameBlog')
+					}
+					return $t('blog')
+				})
+			}}
+		</h1>
+		<UContainer>
+			<UCard
+				v-for="post in data"
+				:key="post.path"
+				class="relative hover:bg-elevated"
+			>
+				<NuxtLink :to="getPostUrl(post)" class="absolute inset-0" />
+				<div class="flex flex-col md:flex-row items-center">
+					<NuxtImg src="/favicon.png" class="w-full md:min-w-40 md:max-w-1/3" />
+					<div>
+						<h2 class="font-bold">{{ post.title }}</h2>
+						<p class="line-clamp-5 overflow-hidden">
+							{{ post.description }}
+						</p>
+					</div>
 				</div>
-			</div>
-		</UCard>
-	</UContainer>
+			</UCard>
+		</UContainer>
+	</div>
 </template>

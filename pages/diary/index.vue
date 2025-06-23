@@ -50,22 +50,24 @@ watch(placeholder, async (newValue, oldValue) => {
 </script>
 
 <template>
-	<UCalendar
-		v-model="selectedDate"
-		v-model:placeholder="placeholder"
-		:is-date-disabled="isDateDisabled"
-		class="w-fit mx-auto mb-4 md:mb-6"
-	/>
-	<UContainer>
-		<h1 v-if="selectedDate" class="text-center font-bold">
-			{{ $d(selectedDate.toDate('JST'), 'long') }}
-		</h1>
-		<ContentRenderer
-			v-if="diaryData"
-			:value="diaryData"
-			:prose="true"
-			tag="article"
-			class="diary-content"
+	<div>
+		<UCalendar
+			v-model="selectedDate"
+			v-model:placeholder="placeholder"
+			:is-date-disabled="isDateDisabled"
+			class="w-fit mx-auto mb-4 md:mb-6"
 		/>
-	</UContainer>
+		<UContainer>
+			<h1 v-if="selectedDate" class="text-center font-bold">
+				{{ $d(selectedDate.toDate('JST'), 'long') }}
+			</h1>
+			<ContentRenderer
+				v-if="diaryData"
+				:value="diaryData"
+				:prose="true"
+				tag="article"
+				class="diary-content"
+			/>
+		</UContainer>
+	</div>
 </template>
