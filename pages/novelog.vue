@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { FormSubmitEvent } from '@nuxt/ui'
-import type { ShallowRef } from 'vue'
 import * as z from 'zod'
 
 const { t } = useI18n({
@@ -206,7 +205,10 @@ const handleLoadSave = (saveItem: SaveItem) => {
 	localStorage.setItem('novelog-items', JSON.stringify(items.value))
 }
 
+const loading = ref(true)
+
 onMounted(() => {
+	loading.value = false
 	const localSaveData = localStorage.getItem('novelog-save-data')
 	if (localSaveData) {
 		Object.assign(saveData, JSON.parse(localSaveData))
@@ -270,7 +272,7 @@ const importDataFromJson = async () => {
 				} else {
 					alert('Invalid JSON structure.')
 				}
-			} catch (error) {
+			} catch {
 				alert('Failed to load JSON file.')
 			}
 		}
@@ -370,6 +372,16 @@ const tourSteps = [
 </script>
 
 <template>
+	<div
+		v-if="loading"
+		class="fixed top-0 left-0 w-screen h-screen bg-default flex flex-col justify-center items-center z-5000 gap-4 px-4 sm:px-6 lg:px-8"
+	>
+		<div class="flex items-center gap-2">
+			<UIcon name="i-lucide-loader-circle" class="animate-spin size-6" />
+			{{ t('loading') }}
+		</div>
+		<UProgress animation="swing" />
+	</div>
 	<OnboardingTour
 		id="novelog"
 		:steps="tourSteps"
@@ -752,6 +764,7 @@ const tourSteps = [
 	},
 	"zh": {
 		"title": "视觉小说攻略助手",
+		"loading": "加载中",
 		"importData": "导入数据",
 		"exportData": "导出数据",
 		"saveLoad": "存档 / 读取",
