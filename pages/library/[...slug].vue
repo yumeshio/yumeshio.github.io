@@ -53,6 +53,7 @@
 						class="group absolute top-0 right-0 rotate-45 translate-x-1/2 -translate-y-1/2 size-16 z-20"
 						trailing-icon="i-lucide-arrow-down"
 						size="xl"
+						:color="getButtonColor(record.status)"
 						:ui="{
 							base: 'rounded-none items-end justify-center p-1',
 							trailingIcon:
@@ -61,18 +62,18 @@
 					/>
 					<template #content>
 						<div class="pt-8 px-4 pb-4">
-							<div class="flex gap-2">
+							<div class="flex gap-2 mb-2">
 								<UBadge v-for="tag in record.tags" :key="tag">{{ tag }}</UBadge>
 							</div>
-							<h2>{{ record.title }}</h2>
-							<p>
+							<h2 class="font-bold text-lg mb-2">{{ record.title }}</h2>
+							<div class="flex gap-1 items-center">
 								<UIcon name="i-lucide-calendar-1" />{{ record.releaseDate }}
-							</p>
-							<p>
+							</div>
+							<div class="flex gap-1 items-center">
 								<UIcon name="i-lucide-calendar-check" />{{
 									record.completeDate
 								}}
-							</p>
+							</div>
 						</div>
 					</template>
 				</UCollapsible>
@@ -93,6 +94,7 @@
 	</div>
 </template>
 <script setup lang="ts">
+import type { LibraryCollectionItem } from '@nuxt/content'
 import type { TabsItem, FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
@@ -192,6 +194,22 @@ const data = await useAsyncData(route.path, async () => {
 const records = computed(() => {
 	return data.data.value || []
 })
+
+const getButtonColor = (
+	status?: 'completed' | 'ongoing' | 'unstarted' | 'wishlist',
+): 'success' | 'primary' | 'secondary' | 'info' | 'neutral' =>
+	({
+		completed: 'success',
+		ongoing: 'primary',
+		unstarted: 'secondary',
+		wishlist: 'info',
+		other: 'neutral',
+	})[status ?? 'other'] as
+		| 'success'
+		| 'primary'
+		| 'secondary'
+		| 'info'
+		| 'neutral'
 </script>
 
 <i18n lang="json">
