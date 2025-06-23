@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { FormSubmitEvent } from '@nuxt/ui'
+import type { ShallowRef } from 'vue'
 import * as z from 'zod'
 
 const { t } = useI18n({
@@ -174,6 +175,23 @@ const handleLoadItem = (item: Omit<ChoiceItem, 'selectedChoice'>) => {
 	state.choices = item.choices
 	allItemsModalOpen.value = false
 }
+
+// Search function
+const searchQueryModel = ref('')
+const searchQuery = ref('')
+const handleSearch = () => {
+	searchQuery.value = searchQueryModel.value
+}
+const hitItems = computed(() => {
+	return allItems.value.filter((item) => {
+		return (
+			item.description.includes(searchQuery.value) ||
+			item.choices.findIndex((choice) => choice.includes(searchQuery.value)) >
+				-1
+		)
+	})
+})
+
 const itemModalOpen = ref(false)
 const allItemsModalOpen = ref(false)
 const saveModalOpen = ref(false)
@@ -616,8 +634,22 @@ const tourSteps = [
 									data-tour-step="history"
 								/>
 								<template #body>
+									<UButtonGroup>
+										<UInput
+											v-model="searchQueryModel"
+											leading-icon="i-lucide-search"
+											color="neutral"
+											variant="outline"
+										/>
+										<UButton
+											:label="t('search')"
+											color="neutral"
+											variant="subtle"
+											@click="handleSearch"
+										/>
+									</UButtonGroup>
 									<UCard
-										v-for="(item, index) in allItems"
+										v-for="(item, index) in hitItems"
 										:key="index"
 										:ui="{
 											footer:
