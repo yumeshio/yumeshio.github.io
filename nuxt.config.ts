@@ -8,6 +8,13 @@ export default defineNuxtConfig({
 		head: {
 			link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }],
 		},
+		layoutTransition: {
+			enterActiveClass: 'transition-all',
+			leaveActiveClass: 'transition-all',
+			enterFromClass: 'blur opacity-0',
+			leaveToClass: 'blur opacity-0',
+			mode: 'out-in',
+		},
 	},
 	devServer: {
 		port: 3333,

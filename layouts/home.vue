@@ -1,4 +1,6 @@
 <template>
-	<slot />
-	<AppFooter />
+	<div>
+		<slot />
+		<AppFooter />
+	</div>
 </template>

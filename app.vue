@@ -1,7 +1,15 @@
 <template>
 	<UApp :locale="locales[locale]">
 		<NuxtLayout>
-			<NuxtPage />
+			<NuxtPage
+				:transition="{
+					enterActiveClass: 'transition-all',
+					leaveActiveClass: 'transition-all',
+					enterFromClass: 'opacity-0 blur',
+					leaveToClass: 'opactiy-0 blur',
+					mode: 'out-in',
+				}"
+			/>
 		</NuxtLayout>
 	</UApp>
 </template>
