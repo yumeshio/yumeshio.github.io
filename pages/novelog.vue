@@ -646,12 +646,13 @@ const tourSteps = [
 									data-tour-step="history"
 								/>
 								<template #body>
-									<UButtonGroup>
+									<UButtonGroup class="flex mb-2">
 										<UInput
 											v-model="searchQueryModel"
 											leading-icon="i-lucide-search"
 											color="neutral"
 											variant="outline"
+											class="grow"
 										/>
 										<UButton
 											:label="t('search')"
@@ -736,6 +737,7 @@ const tourSteps = [
 {
 	"ja": {
 		"title": "ノベログ",
+		"search": "検索",
 		"importData": "データを読み込み",
 		"exportData": "データを保存",
 		"saveLoad": "保存 / 読み込み",
@@ -765,6 +767,7 @@ const tourSteps = [
 	"zh": {
 		"title": "视觉小说攻略助手",
 		"loading": "加载中",
+		"search": "搜索",
 		"importData": "导入数据",
 		"exportData": "导出数据",
 		"saveLoad": "存档 / 读取",

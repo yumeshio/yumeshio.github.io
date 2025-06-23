@@ -239,7 +239,7 @@ onUnmounted(() => {
 			</template>
 		</UPopover>
 	</Teleport>
-	<UModal v-model:open="modalOpen">
+	<UModal v-model:open="modalOpen" :title="t('onboardingTour')">
 		<template #body>
 			<p class="mb-4">{{ introduction }}</p>
 			<p class="text-center font-bold">{{ t('ifStartTour') }}</p>
@@ -273,7 +273,8 @@ onUnmounted(() => {
 		"next": "次へ",
 		"done": "終了",
 		"continue": "続ける",
-		"tourIsHidden": "ガイドが一時的に非表示になっています。アプリをご自由にお試しください。"
+		"tourIsHidden": "ガイドが一時的に非表示になっています。アプリをご自由にお試しください。",
+		"onboardingTour": "新ユーザガイド"
 	},
 	"zh": {
 		"hide": "我要试试",
@@ -283,7 +284,8 @@ onUnmounted(() => {
 		"tourIsHidden": "引导已暂时隐藏。您可以自由体验本应用。",
 		"ifStartTour": "要开始新用户引导吗？",
 		"yes": "是",
-		"no": "否"
+		"no": "否",
+		"onboardingTour": "新用户引导"
 	}
 }
 </i18n>
