@@ -2,9 +2,7 @@
 import type { FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
-const { t } = useI18n({
-	useScope: 'local',
-})
+const { t } = useLocalI18n()
 
 useHead({
 	title: t('title'),
