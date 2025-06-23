@@ -2,10 +2,41 @@
 	"$schema": "https://json-schema.org/draft-07/schema",
 	"$id": "https://yumeshio.com/json/library.schema.json",
 	"title": "Library",
-	"description": "An item in the library",
+	"description": "An entry in the library",
 	"type": "object",
 	"properties": {
 		"title": {
+			"type": "string"
+		},
+		"releaseDate": {
+			"type": "string"
+		},
+		"startDate": {
+			"type": "string"
+		},
+		"purchaseDate": {
+			"type": "string"
+		},
+		"completeDate": {
+			"type": "string"
+		},
+		"status": {
+			"type": "string",
+			"enum": ["unstarted", "ongoing", "completed", "wishlist"]
+		},
+		"tags": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"images": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"link": {
 			"type": "string"
 		}
 	}
