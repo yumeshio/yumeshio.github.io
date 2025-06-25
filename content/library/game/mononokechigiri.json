@@ -3,5 +3,7 @@
 	"releaseDate": "2025-07-31",
 	"status": "wishlist",
 	"tags": ["乙女", "オトメイト"],
-	"images": ["//www.otomate.jp/mononoke/info/img/jacket.png?v=3"]
+	"images": [
+		"https://www.otomate.jp/mononoke/info/img/jacket.png?v=3&cx=0&cy=10&cw=370&ch=590"
+	]
 }
