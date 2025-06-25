@@ -80,13 +80,14 @@
 				<UCarousel
 					v-slot="{ item }"
 					:items="record.images"
-					class="z-0 w-full h-full bg-inverted flex items-stretch"
 					:ui="{
-						container: 'h-full',
-						item: 'relative h-full',
+						item: 'basis-full flex items-center justify-center h-full',
+						container: 'items-center h-full',
+						viewport: 'h-full',
 					}"
+					class="h-full"
 				>
-					<img :src="item" class="object-contain h-full w-full" />
+					<NuxtImg :src="item" class="object-contain h-full w-full" />
 				</UCarousel>
 				<h2 class="font-bold text-center hidden">{{ record.title }}</h2>
 			</UCard>
@@ -94,7 +95,6 @@
 	</div>
 </template>
 <script setup lang="ts">
-import type { LibraryCollectionItem } from '@nuxt/content'
 import type { TabsItem, FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
