@@ -91,14 +91,12 @@
 						<div
 							class="absolute inset-0 blur bg-cover bg-center"
 							:style="{
-								backgroundImage: `url(${item})`,
+								backgroundImage: `url(//wsrv.nl/?url=${item})`,
 							}"
 						></div>
-						<div
-							:style="{
-								backgroundImage: `url(${item})`,
-							}"
-							class="object-contain h-full w-full z-10 bg-contain bg-no-repeat bg-center"
+						<img
+							:src="`//wsrv.nl/?url=${item}`"
+							class="object-contain h-full w-full z-10"
 						/>
 					</div>
 				</UCarousel>
