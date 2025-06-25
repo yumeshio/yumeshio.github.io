@@ -46,7 +46,7 @@
 				<UCollapsible
 					:ui="{
 						content:
-							'origin-top-right data-[state=open]:animate-[collapsible-scale-in_200ms_ease-out] data-[state=closed]:animate-[collapsible-scale-out_200ms_ease-out] overflow-hidden absolute inset-0 bg-elevated text-toned z-10',
+							'origin-top-right data-[state=open]:animate-[collapsible-scale-in_200ms_ease-out] data-[state=closed]:animate-[collapsible-scale-out_200ms_ease-out] overflow-hidden absolute inset-0 bg-elevated/95 text-toned z-10',
 					}"
 				>
 					<UButton
@@ -81,13 +81,23 @@
 					v-slot="{ item }"
 					:items="record.images"
 					:ui="{
-						item: 'basis-full flex items-center justify-center h-full',
+						item: 'basis-full h-full',
 						container: 'items-center h-full',
 						viewport: 'h-full',
 					}"
 					class="h-full"
 				>
-					<NuxtImg :src="item" class="object-contain h-full w-full" />
+					<div class="w-full h-full flex justify-center items-center">
+						<div
+							class="absolute inset-0 blur"
+							:style="{
+								backgroundImage: `url(${item})`,
+								backgroundSize: 'cover',
+								backgroundPosition: 'center',
+							}"
+						></div>
+						<NuxtImg :src="item" class="object-contain h-full w-full z-10" />
+					</div>
 				</UCarousel>
 				<h2 class="font-bold text-center hidden">{{ record.title }}</h2>
 			</UCard>
