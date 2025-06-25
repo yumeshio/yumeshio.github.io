@@ -95,7 +95,7 @@
 					></div>
 					<NuxtImg
 						:src="item"
-						crossorigin="anonymous"
+						:crossorigin="true"
 						class="object-contain h-full w-full z-10"
 					/>
 				</div>
