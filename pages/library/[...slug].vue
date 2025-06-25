@@ -188,10 +188,6 @@ const onSubmit = async (event: FormSubmitEvent<Schema>, tab: string) => {
 
 const isModalOpen = ref(false)
 
-definePageMeta({
-	title: 'ライブラリ',
-})
-
 const data = await useAsyncData(route.path, async () => {
 	const query = queryCollection('library')
 	query.where('stem', 'LIKE', `%${route.path.substring(1)}%`)
