@@ -1,37 +1,55 @@
 <template>
 	<div>
-		<h1>{{ $t('library') }}</h1>
-		<UModal v-model:open="isModalOpen" :title="t('filter')">
-			<UButton :label="t('filter')" color="neutral" variant="subtle" />
-			<template #body>
-				<UTabs
-					:default-value="getActiveTab()"
-					:items="tabs"
-					class="w-full"
-					:ui="{
-						list: 'overflow-x-auto gap-2',
-						trigger: 'whitespace-nowrap text-nowrap min-w-fit',
-					}"
-				>
-					<template #content="{ item }">
-						<UForm
-							:state="condition"
-							:schema="schema"
-							@submit="onSubmit($event, item.value)"
+		<UContainer class="max-w-7xl">
+			<h1 class="hidden">{{ $t('library') }}</h1>
+			<div class="flex justify-between pb-4 sm:pb-6 md:pb-8">
+				<UModal v-model:open="isModalOpen" :title="t('filter')">
+					<UButton
+						:label="t('filter')"
+						leading-icon="i-lucide-filter"
+						color="neutral"
+						variant="subtle"
+					/>
+					<template #body>
+						<UTabs
+							:default-value="getActiveTab()"
+							:items="tabs"
+							class="w-full"
+							:ui="{
+								list: 'overflow-x-auto gap-2',
+								trigger: 'whitespace-nowrap text-nowrap min-w-fit',
+							}"
 						>
-							<UFormField :label="t('status')">
-								<USelect
-									v-model="condition.status"
-									:items="statusList"
-									class="w-full"
-								/>
-							</UFormField>
-							<UButton type="submit" :label="t('filter')" />
-						</UForm>
+							<template #content="{ item }">
+								<UForm
+									:state="condition"
+									:schema="schema"
+									@submit="onSubmit($event, item.value)"
+								>
+									<UFormField :label="t('status')">
+										<USelect
+											v-model="condition.status"
+											:items="statusList"
+											class="w-full"
+										/>
+									</UFormField>
+									<UButton type="submit" :label="t('filter')" />
+								</UForm>
+							</template>
+						</UTabs>
 					</template>
-				</UTabs>
-			</template>
-		</UModal>
+				</UModal>
+				<USelect
+					:items="[
+						{
+							label: t('sort.default'),
+							value: 'default',
+						},
+					]"
+					leading-icon="lucide-arrow-up-down"
+				/>
+			</div>
+		</UContainer>
 		<div
 			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
 		>
