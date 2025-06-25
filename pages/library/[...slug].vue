@@ -86,17 +86,16 @@
 			>
 				<div class="w-full h-full flex justify-center items-center">
 					<div
-						class="absolute inset-0 blur"
+						class="absolute inset-0 blur bg-cover bg-center"
 						:style="{
 							backgroundImage: `url(${item})`,
-							backgroundSize: 'cover',
-							backgroundPosition: 'center',
 						}"
 					></div>
-					<NuxtImg
-						:src="item"
-						:crossorigin="true"
-						class="object-contain h-full w-full z-10"
+					<div
+						:style="{
+							backgroundImage: `url(${item})`,
+						}"
+						class="object-contain h-full w-full z-10 bg-contain bg-no-repeat bg-center"
 					/>
 				</div>
 			</UCarousel>
