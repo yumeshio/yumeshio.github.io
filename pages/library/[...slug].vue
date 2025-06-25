@@ -87,15 +87,16 @@
 					}"
 					class="h-full"
 				>
-					<div class="w-full h-full flex justify-center items-center">
+					<div class="w-full h-full flex justify-center items-center relative">
 						<div
 							class="absolute inset-0 blur bg-cover bg-center"
 							:style="{
 								backgroundImage: `url(//wsrv.nl/?url=${item})`,
 							}"
 						></div>
-						<img
-							:src="`//wsrv.nl/?url=${item}`"
+						<NuxtImg
+							provider="weserv"
+							:src="item"
 							class="object-contain h-full w-full z-10"
 						/>
 					</div>

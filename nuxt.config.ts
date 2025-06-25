@@ -19,6 +19,11 @@ export default defineNuxtConfig({
 	devServer: {
 		port: 3333,
 	},
+	image: {
+		weserv: {
+			baseURL: 'https://yumeshio.github.io',
+		},
+	},
 	modules: [
 		'@nuxt/content',
 		'@nuxt/eslint',
