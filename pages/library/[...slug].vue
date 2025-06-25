@@ -93,7 +93,11 @@
 							backgroundPosition: 'center',
 						}"
 					></div>
-					<NuxtImg :src="item" class="object-contain h-full w-full z-10" />
+					<NuxtImg
+						:src="item"
+						crossorigin="anonymous"
+						class="object-contain h-full w-full z-10"
+					/>
 				</div>
 			</UCarousel>
 			<h2 class="font-bold text-center hidden">{{ record.title }}</h2>
