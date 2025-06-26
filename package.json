@@ -4,9 +4,9 @@
 	"type": "module",
 	"version": "0.0.1",
 	"scripts": {
-		"build": "nuxt build",
+		"build": "NODE_TLS_REJECT_UNAUTHORIZED=0 nuxt build",
 		"dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 nuxt dev",
-		"generate": "nuxt generate",
+		"generate": "NODE_TLS_REJECT_UNAUTHORIZED=0 nuxt generate",
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare",
 		"format": "prettier . --write"
