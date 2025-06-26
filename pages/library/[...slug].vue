@@ -195,6 +195,7 @@ const condition = reactive<Partial<Schema>>({
 
 const onSubmit = async (event: FormSubmitEvent<Schema>, tab: string) => {
 	isModalOpen.value = false
+	records.value = []
 	await navigateTo({
 		params: {
 			slug: tab === 'all' ? '' : tab,
@@ -203,6 +204,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>, tab: string) => {
 			status: condition.status === 'all' ? undefined : condition.status,
 		},
 	})
+	refreshNuxtData(route.path)
 }
 
 const isModalOpen = ref(false)
