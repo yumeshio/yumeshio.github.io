@@ -33,6 +33,7 @@ export default defineNuxtConfig({
 		'@nuxt/ui',
 		'nuxt-viewport',
 		'@nuxtjs/i18n',
+		'@vueuse/nuxt',
 	],
 	viewport: {
 		breakpoints: {
