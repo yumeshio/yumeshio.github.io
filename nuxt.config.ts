@@ -34,14 +34,6 @@ export default defineNuxtConfig({
 		'@nuxtjs/i18n',
 		'@vueuse/nuxt',
 	],
-	viewport: {
-		breakpoints: {
-			xs: 320,
-			sm: 640,
-			md: 768,
-			lg: 1024,
-		},
-	},
 	i18n: {
 		baseUrl: '/',
 		strategy: 'no_prefix',
