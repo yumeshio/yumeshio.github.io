@@ -33,13 +33,18 @@
 											class="w-full"
 										/>
 									</UFormField>
-									<UButton type="submit" :label="t('filter')" />
+									<UButton
+										type="submit"
+										:label="t('filter')"
+										class="mt-4 w-full mx-auto max-w-sm flex justify-center"
+									/>
 								</UForm>
 							</template>
 						</UTabs>
 					</template>
 				</UModal>
 				<USelect
+					v-model="sort"
 					:items="[
 						{
 							label: t('sort.default'),
@@ -162,6 +167,8 @@ const tabs: (Omit<TabsItem, 'value'> & { value: string })[] = [
 		value: 'other',
 	},
 ]
+
+const sort = ref('default')
 
 const route = useRoute()
 const getActiveTab = () => {
