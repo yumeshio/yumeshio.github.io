@@ -1,0 +1,1 @@
+@keyframes highlight-target{0%,to{-webkit-backdrop-filter:brightness(90%);backdrop-filter:brightness(90%);border-width:1px;filter:brightness(90%)}50%{-webkit-backdrop-filter:brightness(110%);backdrop-filter:brightness(110%);border-width:2px;filter:brightness(110%)}}
