@@ -208,19 +208,6 @@ const onSubmit = async (event: FormSubmitEvent<Schema>, tab: string) => {
 const isModalOpen = ref(false)
 const records = ref([] as LibraryCollectionItem[])
 
-// const { data } = await useAsyncData(route.path, async () => {
-// 	const query = queryCollection('library')
-// 	query.where('stem', 'LIKE', `%${route.path.substring(1)}%`)
-// 	if (route.query.status) {
-// 		query.where('status', '=', route.query.status)
-// 	}
-// 	return query.limit(2).all()
-// })
-
-// if (data.value) {
-// 	records.value.push(...data.value)
-// }
-
 const data = await useAsyncData(route.path, async () => {
 	const query = queryCollection('library')
 	query.where('stem', 'LIKE', `%${route.path.substring(1)}%`)
@@ -257,7 +244,7 @@ const shouldLoadMore = computed(() => {
 	)
 })
 watch(shouldLoadMore, async () => {
-	if (shouldLoadMore.value) {
+	while (shouldLoadMore.value) {
 		await refreshNuxtData(route.path)
 		if (data.data.value) {
 			records.value.push(...data.data.value)
