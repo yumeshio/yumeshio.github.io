@@ -50,8 +50,9 @@
 				/>
 			</div>
 		</UContainer>
-		<UContainer
-			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 max-w-7xl"
+		<div
+			ref="container"
+			class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto"
 		>
 			<UCard
 				v-for="record in records"
@@ -121,16 +122,15 @@
 				</UCarousel>
 				<h2 class="font-bold text-center hidden">{{ record.title }}</h2>
 			</UCard>
-		</UContainer>
+		</div>
 	</div>
 </template>
 <script setup lang="ts">
+import type { LibraryCollectionItem } from '@nuxt/content'
 import type { TabsItem, FormSubmitEvent } from '@nuxt/ui'
 import * as z from 'zod'
 
-const { t } = useI18n({
-	useScope: 'local',
-})
+const { t } = useLocalI18n()
 
 const tabs: (Omit<TabsItem, 'value'> & { value: string })[] = [
 	{
@@ -203,10 +203,23 @@ const onSubmit = async (event: FormSubmitEvent<Schema>, tab: string) => {
 			status: condition.status === 'all' ? undefined : condition.status,
 		},
 	})
-	data.refresh()
 }
 
 const isModalOpen = ref(false)
+const records = ref([] as LibraryCollectionItem[])
+
+// const { data } = await useAsyncData(route.path, async () => {
+// 	const query = queryCollection('library')
+// 	query.where('stem', 'LIKE', `%${route.path.substring(1)}%`)
+// 	if (route.query.status) {
+// 		query.where('status', '=', route.query.status)
+// 	}
+// 	return query.limit(2).all()
+// })
+
+// if (data.value) {
+// 	records.value.push(...data.value)
+// }
 
 const data = await useAsyncData(route.path, async () => {
 	const query = queryCollection('library')
@@ -214,11 +227,7 @@ const data = await useAsyncData(route.path, async () => {
 	if (route.query.status) {
 		query.where('status', '=', route.query.status)
 	}
-	return query.all()
-})
-
-const records = computed(() => {
-	return data.data.value || []
+	return query.skip(records.value.length).limit(2).all()
 })
 
 const getButtonColor = (
@@ -236,6 +245,25 @@ const getButtonColor = (
 		| 'secondary'
 		| 'info'
 		| 'neutral'
+
+// Infinite scroll
+const container = useTemplateRef<HTMLElement>('container')
+const containerBounding = useElementBounding(container)
+const windowSize = useWindowSize()
+const shouldLoadMore = computed(() => {
+	return (
+		containerBounding.bottom.value > 0 &&
+		containerBounding.bottom.value <= windowSize.height.value
+	)
+})
+watch(shouldLoadMore, async () => {
+	if (shouldLoadMore.value) {
+		await refreshNuxtData(route.path)
+		if (data.data.value) {
+			records.value.push(...data.data.value)
+		}
+	}
+})
 </script>
 
 <i18n lang="json">
