@@ -31,7 +31,6 @@ export default defineNuxtConfig({
 		'@nuxt/icon',
 		'@nuxt/image',
 		'@nuxt/ui',
-		'nuxt-viewport',
 		'@nuxtjs/i18n',
 		'@vueuse/nuxt',
 	],

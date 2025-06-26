@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 import type { LocationQuery } from 'vue-router'
+import { breakpointsTailwind } from '@vueuse/core'
 const { t, locale, locales, setLocale } = useI18n()
 const availableLocales = computed(() => {
 	return locales.value.filter((i) => i.code !== locale.value)
 })
 const languagePopupOpen = ref(false)
 const { resolve } = useRouter()
-const viewport = useViewport()
+const breakpoints = useBreakpoints(breakpointsTailwind)
 const orientation = computed(() => {
-	if (viewport.isGreaterOrEquals('sm')) {
+	if (breakpoints.isGreaterOrEqual('sm')) {
 		return 'horizontal'
 	}
 	return 'vertical'
@@ -95,15 +96,15 @@ const items = computed((): NavigationMenuItem[] =>
 	].slice(0, 1),
 )
 const open = ref<boolean>(false)
-watch(viewport.breakpoint, () => {
-	if (viewport.isGreaterOrEquals('sm')) {
+watch(breakpoints.active(), () => {
+	if (breakpoints.isGreaterOrEqual('sm')) {
 		open.value = true
 	} else {
 		open.value = false
 	}
 })
 watch(route, () => {
-	open.value = viewport.isGreaterOrEquals('sm')
+	open.value = breakpoints.isGreaterOrEqual('sm')
 })
 </script>
 
