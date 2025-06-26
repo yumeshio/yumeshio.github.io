@@ -16,6 +16,11 @@ export default defineNuxtConfig({
 			mode: 'out-in',
 		},
 	},
+	content: {
+		preview: {
+			api: 'https://api.nuxt.studio',
+		},
+	},
 	devServer: {
 		port: 3333,
 	},
