@@ -4,10 +4,7 @@ export default defineContentConfig({
 	collections: {
 		blog: defineCollection({
 			type: 'page',
-			source: {
-				repository: 'https://github.com/yumeshio/content',
-				include: 'blog/**/*.md',
-			},
+			source: 'blog/**/*.md',
 			schema: z.object({
 				date: z.string(),
 				tags: z.array(z.string()),
@@ -15,20 +12,14 @@ export default defineContentConfig({
 		}),
 		diary: defineCollection({
 			type: 'page',
-			source: {
-				repository: 'https://github.com/yumeshio/content',
-				include: 'diary/**/*.md',
-			},
+			source: 'diary/**/*.md',
 			schema: z.object({
 				date: z.string(),
 			}),
 		}),
 		library: defineCollection({
 			type: 'data',
-			source: {
-				repository: 'https://github.com/yumeshio/content',
-				include: 'library/**/*.json',
-			},
+			source: 'library/**/*.json',
 			schema: z.object({
 				title: z.string(),
 				releaseDate: z.string().optional(),
