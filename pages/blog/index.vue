@@ -46,7 +46,7 @@ watch(tags, async () => {
 
 <template>
 	<div>
-		<h1>
+		<h1 class="text-center font-bold">
 			{{
 				computed(() => {
 					if (tags?.includes('dev')) {
@@ -66,14 +66,15 @@ watch(tags, async () => {
 					class="relative hover:bg-elevated"
 				>
 					<NuxtLink :to="post.path" class="absolute inset-0" />
-					<div class="flex flex-col md:flex-row items-center">
-						<NuxtImg
-							src="/favicon.png"
-							class="w-full md:min-w-40 md:max-w-1/3"
-						/>
+					<div class="flex flex-col sm:flex-row gap-4">
+						<div
+							class="flex self-center sm:self-start justify-center items-center w-full max-w-40 sm:min-w-40 sm:max-w-1/3"
+						>
+							<NuxtImg src="/favicon.png" />
+						</div>
 						<div>
-							<h2 class="font-bold">{{ post.title }}</h2>
-							<p class="line-clamp-5 overflow-hidden">
+							<h2 class="font-bold mb-2">{{ post.title }}</h2>
+							<p class="line-clamp-5 overflow-hidden text-sm">
 								{{ post.description }}
 							</p>
 						</div>
