@@ -217,7 +217,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>, tab: string) => {
 const isModalOpen = ref(false)
 const records = ref([] as LibraryCollectionItem[])
 
-const data = await useAsyncData(route.path, async () => {
+const { data } = await useAsyncData(route.path, async () => {
 	const query = queryCollection('library')
 	query.where('stem', 'LIKE', `%${route.path.substring(1)}%`)
 	if (route.query.status) {
@@ -244,19 +244,14 @@ const getButtonColor = (
 
 // Infinite scroll
 const container = useTemplateRef<HTMLElement>('container')
-const containerBounding = useElementBounding(container)
-const windowSize = useWindowSize()
-const shouldLoadMore = computed(() => {
-	return (
-		containerBounding.bottom.value > 0 &&
-		containerBounding.bottom.value <= windowSize.height.value
-	)
-})
+const shouldLoadMore = useElementBottomVisibility(container)
 watch(shouldLoadMore, async () => {
 	while (shouldLoadMore.value) {
 		await refreshNuxtData(route.path)
-		if (data.data.value) {
-			records.value.push(...data.data.value)
+		if (data.value && data.value.length > 0) {
+			records.value.push(...data.value)
+		} else {
+			break
 		}
 	}
 })
