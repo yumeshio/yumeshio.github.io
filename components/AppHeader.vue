@@ -49,6 +49,7 @@ const items = computed((): NavigationMenuItem[] => [
 		to: resolve({
 			path: '/blog',
 		}),
+		active: route.path.startsWith('/blog'),
 		children: [
 			{
 				label: t('devBlog'),

@@ -38,13 +38,6 @@ const loadMore = async () => {
 }
 watch(shouldLoadMore, loadMore)
 
-const getPostUrl = (post: BlogCollectionItem) => {
-	const tags = post.tags
-	return resolve({
-		path: post.path,
-		query: { tag: tags },
-	})
-}
 watch(tags, async () => {
 	posts.value = []
 	await loadMore()
@@ -72,7 +65,7 @@ watch(tags, async () => {
 					:key="post.path"
 					class="relative hover:bg-elevated"
 				>
-					<NuxtLink :to="getPostUrl(post)" class="absolute inset-0" />
+					<NuxtLink :to="post.path" class="absolute inset-0" />
 					<div class="flex flex-col md:flex-row items-center">
 						<NuxtImg
 							src="/favicon.png"
