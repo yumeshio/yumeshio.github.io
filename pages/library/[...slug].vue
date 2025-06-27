@@ -2,6 +2,7 @@
 	<div>
 		<UContainer class="max-w-7xl">
 			<h1 class="hidden">{{ $t('library') }}</h1>
+			<p>{{ queryCondition }}</p>
 			<div class="flex justify-between pb-4 sm:pb-6 md:pb-8">
 				<UModal v-model:open="isModalOpen" :title="t('filter')">
 					<UButton
@@ -168,7 +169,29 @@ const tabs: (Omit<TabsItem, 'value'> & { value: string })[] = [
 	},
 ]
 
+const schema = z.object({
+	status: z
+		.enum(['wishlist', 'unstarted', 'ongoing', 'completed', 'all'])
+		.optional(),
+	tags: z.array(z.string()).optional(),
+})
+
+type Schema = z.output<typeof schema>
+
 const sort = ref('default')
+
+const statusList = ref<
+	{
+		label: ReturnType<typeof t>
+		value: Schema['status']
+	}[]
+>([
+	{ label: t('unstarted'), value: 'unstarted' },
+	{ label: t('ongoing'), value: 'ongoing' },
+	{ label: t('completed'), value: 'completed' },
+	{ label: t('wishlist'), value: 'wishlist' },
+	{ label: t('all'), value: 'all' },
+])
 
 const route = useRoute()
 const getActiveTab = () => {
@@ -180,24 +203,28 @@ const getActiveTab = () => {
 	return 'all'
 }
 
-const statusList = ref([
-	{ label: t('unstarted'), value: 'unstarted' },
-	{ label: t('ongoing'), value: 'ongoing' },
-	{ label: t('completed'), value: 'completed' },
-	{ label: t('wishlist'), value: 'wishlist' },
-	{ label: t('all'), value: 'all' },
-])
-
-const schema = z.object({
-	status: z
-		.enum(['wishlist', 'unstarted', 'ongoing', 'completed', 'all'])
-		.optional(),
+const queryCondition = computed(() => {
+	const status: Schema['status'] =
+		typeof route.query.status === 'string' &&
+		statusList.value
+			.map((item) => item.value as string)
+			.includes(route.query.status)
+			? (route.query.status as Schema['status'])
+			: undefined
+	const tags: Schema['tags'] = route.query.tag
+		? typeof route.query.tag === 'string'
+			? [route.query.tag]
+			: route.query.tag.filter((t) => t !== null)
+		: []
+	return {
+		status,
+		tags,
+	}
 })
 
-type Schema = z.output<typeof schema>
-
 const condition = reactive<Partial<Schema>>({
-	status: (route.query.status as Schema['status']) || 'all',
+	status: (queryCondition.value.status as Schema['status']) || 'all',
+	tags: queryCondition.value.tags,
 })
 
 const onSubmit = async (event: FormSubmitEvent<Schema>, tab: string) => {
@@ -220,8 +247,16 @@ const records = ref([] as LibraryCollectionItem[])
 const { data } = await useAsyncData(route.path, async () => {
 	const query = queryCollection('library')
 	query.where('stem', 'LIKE', `%${route.path.substring(1)}%`)
-	if (route.query.status) {
-		query.where('status', '=', route.query.status)
+	if (queryCondition.value.status) {
+		query.where('status', '=', queryCondition.value.status)
+	}
+	if (queryCondition.value.tags.length) {
+		query.andWhere((q) => {
+			for (const t of queryCondition.value.tags) {
+				q = q.where('tags', 'LIKE', `%"${t}"%`)
+			}
+			return q
+		})
 	}
 	return query.skip(records.value.length).limit(2).all()
 })
