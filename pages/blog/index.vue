@@ -26,7 +26,7 @@ const { data } = useAsyncData('blog-posts-list', () => {
 
 const list = useTemplateRef<HTMLElement>('list')
 const shouldLoadMore = useElementBottomVisibility(list)
-watch(shouldLoadMore, async () => {
+const loadMore = async () => {
 	while (shouldLoadMore.value) {
 		await refreshNuxtData('blog-posts-list')
 		if (data.value && data.value.length > 0) {
@@ -35,7 +35,8 @@ watch(shouldLoadMore, async () => {
 			break
 		}
 	}
-})
+}
+watch(shouldLoadMore, loadMore)
 
 const getPostUrl = (post: BlogCollectionItem) => {
 	const tags = post.tags
@@ -44,8 +45,9 @@ const getPostUrl = (post: BlogCollectionItem) => {
 		query: { tag: tags },
 	})
 }
-watch(tags, () => {
-	refreshNuxtData()
+watch(tags, async () => {
+	posts.value = []
+	await loadMore()
 })
 </script>
 

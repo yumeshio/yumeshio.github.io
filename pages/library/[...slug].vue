@@ -211,7 +211,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>, tab: string) => {
 			status: condition.status === 'all' ? undefined : condition.status,
 		},
 	})
-	refreshNuxtData(route.path)
+	await loadMore()
 }
 
 const isModalOpen = ref(false)
@@ -245,7 +245,7 @@ const getButtonColor = (
 // Infinite scroll
 const container = useTemplateRef<HTMLElement>('container')
 const shouldLoadMore = useElementBottomVisibility(container)
-watch(shouldLoadMore, async () => {
+const loadMore = async () => {
 	while (shouldLoadMore.value) {
 		await refreshNuxtData(route.path)
 		if (data.value && data.value.length > 0) {
@@ -254,7 +254,8 @@ watch(shouldLoadMore, async () => {
 			break
 		}
 	}
-})
+}
+watch(shouldLoadMore, loadMore)
 </script>
 
 <i18n lang="json">
