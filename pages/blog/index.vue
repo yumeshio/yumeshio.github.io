@@ -2,7 +2,6 @@
 import type { BlogCollectionItem } from '@nuxt/content'
 
 const route = useRoute()
-const { resolve } = useRouter()
 const tags = computed(() => {
 	const tag = route.query.tag
 	return typeof tag === 'string' ? [tag] : tag
@@ -30,6 +29,7 @@ const loadMore = async () => {
 	while (shouldLoadMore.value) {
 		await refreshNuxtData('blog-posts-list')
 		if (data.value && data.value.length > 0) {
+			// @ts-expect-error expect "Type instantiation is excessively deep and possibly infinite."
 			posts.value.push(...data.value)
 		} else {
 			break
