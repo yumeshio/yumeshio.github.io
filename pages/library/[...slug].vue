@@ -2,7 +2,6 @@
 	<div>
 		<UContainer class="max-w-7xl">
 			<h1 class="hidden">{{ $t('library') }}</h1>
-			<p>{{ queryCondition }}</p>
 			<div class="flex justify-between pb-4 sm:pb-6 md:pb-8">
 				<UModal v-model:open="isModalOpen" :title="t('filter')">
 					<UButton
@@ -13,6 +12,7 @@
 					/>
 					<template #body>
 						<UTabs
+							v-model="activeTab"
 							:default-value="getActiveTab()"
 							:items="tabs"
 							class="w-full"
@@ -21,16 +21,20 @@
 								trigger: 'whitespace-nowrap text-nowrap min-w-fit',
 							}"
 						>
-							<template #content="{ item }">
-								<UForm
-									:state="condition"
-									:schema="schema"
-									@submit="onSubmit($event, item.value)"
-								>
+							<template #content>
+								<UForm :state="condition" :schema="schema" @submit="onSubmit">
 									<UFormField :label="t('status')">
 										<USelect
 											v-model="condition.status"
 											:items="statusList"
+											class="w-full"
+										/>
+									</UFormField>
+									<UFormField :label="t('tags')">
+										<UInputMenu
+											v-model="condition.tags"
+											:items="availableTags"
+											multiple
 											class="w-full"
 										/>
 									</UFormField>
@@ -133,7 +137,7 @@
 </template>
 <script setup lang="ts">
 import type { LibraryCollectionItem } from '@nuxt/content'
-import type { TabsItem, FormSubmitEvent } from '@nuxt/ui'
+import type { TabsItem } from '@nuxt/ui'
 import * as z from 'zod'
 
 const { t } = useLocalI18n()
@@ -227,19 +231,46 @@ const condition = reactive<Partial<Schema>>({
 	tags: queryCondition.value.tags,
 })
 
-const onSubmit = async (event: FormSubmitEvent<Schema>, tab: string) => {
+const onSubmit = async () => {
 	isModalOpen.value = false
 	records.value = []
 	await navigateTo({
 		params: {
-			slug: tab === 'all' ? '' : tab,
+			slug: activeTab.value === 'all' ? '' : activeTab.value,
 		},
 		query: {
 			status: condition.status === 'all' ? undefined : condition.status,
+			tag: condition.tags,
 		},
 	})
 	await loadMore()
 }
+
+const activeTab = ref('')
+const { data: availableTagsData } = useAsyncData('availableTags', async () => {
+	const query = queryCollection('library')
+	if (activeTab.value && activeTab.value !== 'all') {
+		query.where('stem', 'LIKE', `%${activeTab.value}%`)
+	}
+	query.select('tags')
+	return query.all()
+})
+watch(activeTab, async () => {
+	await refreshNuxtData('availableTags')
+})
+const availableTags = computed(() => {
+	const set: Record<string, boolean> = {}
+	if (availableTagsData.value) {
+		for (const item of availableTagsData.value) {
+			if (item.tags) {
+				for (const tag of item.tags) {
+					set[tag] = true
+				}
+			}
+		}
+	}
+	return Object.keys(set)
+})
 
 const isModalOpen = ref(false)
 const records = ref([] as LibraryCollectionItem[])
@@ -291,6 +322,9 @@ const loadMore = async () => {
 	}
 }
 watch(shouldLoadMore, loadMore)
+onMounted(() => {
+	activeTab.value = getActiveTab()
+})
 </script>
 
 <i18n lang="json">
@@ -303,7 +337,8 @@ watch(shouldLoadMore, loadMore)
 		"completed": "完了",
 		"unstarted": "未着手",
 		"wishlist": "積み",
-		"all": "すべて"
+		"all": "すべて",
+		"tags": "タグ"
 	}
 }
 </i18n>
