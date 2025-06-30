@@ -32,9 +32,10 @@
 									<UFormField :label="t('tags')" class="mt-2">
 										<UInputMenu
 											v-model="condition.tags"
-											:items="availableTags"
+											:items="availableTags ?? undefined"
 											multiple
 											class="w-full"
+											@update:open="handleTagsInputMenuOpen"
 										/>
 									</UFormField>
 									<UButton
@@ -195,7 +196,6 @@ const statusList = ref<
 	{ label: t('wishlist'), value: 'wishlist' },
 	{ label: t('all'), value: 'all' },
 ])
-
 const route = useRoute()
 const getActiveTab = () => {
 	if (route.params.slug) {
@@ -245,31 +245,32 @@ const onSubmit = async () => {
 	await loadMore()
 }
 
-const activeTab = ref('')
-const { data: availableTagsData } = useAsyncData('availableTags', async () => {
-	const query = queryCollection('library')
-	if (activeTab.value && activeTab.value !== 'all') {
-		query.where('stem', 'LIKE', `%${activeTab.value}%`)
-	}
-	query.select('tags')
-	return query.all()
-})
-watch(activeTab, async () => {
-	await refreshNuxtData('availableTags')
-})
-const availableTags = computed(() => {
-	const set: Record<string, boolean> = {}
-	if (availableTagsData.value) {
-		for (const item of availableTagsData.value) {
+const activeTab = ref(getActiveTab())
+const { data: availableTags, refresh: refreshAvailableTags } = useLazyAsyncData(
+	'availableTags',
+	async () => {
+		const query = queryCollection('library')
+		if (activeTab.value && activeTab.value !== 'all') {
+			query.where('stem', 'LIKE', `%${activeTab.value}%`)
+		}
+		query.select('tags')
+		const items = await query.all()
+		const set: Record<string, boolean> = {}
+		for (const item of items) {
 			if (item.tags) {
 				for (const tag of item.tags) {
 					set[tag] = true
 				}
 			}
 		}
+		return Object.keys(set)
+	},
+)
+const handleTagsInputMenuOpen = (open: boolean) => {
+	if (open) {
+		refreshAvailableTags()
 	}
-	return Object.keys(set)
-})
+}
 
 const isModalOpen = ref(false)
 const records = ref([] as LibraryCollectionItem[])
@@ -321,9 +322,6 @@ const loadMore = async () => {
 	}
 }
 watch(shouldLoadMore, loadMore)
-onMounted(() => {
-	activeTab.value = getActiveTab()
-})
 </script>
 
 <i18n lang="json">
