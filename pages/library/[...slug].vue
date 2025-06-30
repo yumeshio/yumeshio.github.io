@@ -13,7 +13,6 @@
 					<template #body>
 						<UTabs
 							v-model="activeTab"
-							:default-value="getActiveTab()"
 							:items="tabs"
 							class="w-full"
 							:ui="{
@@ -30,7 +29,7 @@
 											class="w-full"
 										/>
 									</UFormField>
-									<UFormField :label="t('tags')">
+									<UFormField :label="t('tags')" class="mt-2">
 										<UInputMenu
 											v-model="condition.tags"
 											:items="availableTags"
