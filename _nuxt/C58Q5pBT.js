@@ -1,1 +1,0 @@
-import{y as o,r,c as l,d as t,O as p,n as f,P as a}from"./Dq_0YSL6.js";const i=o({__name:"Spoiler",setup(u){const e=r(!1);return(n,s)=>(t(),l("span",{class:f({blur:!a(e)}),onClick:s[0]||(s[0]=c=>e.value=!a(e))},[p(n.$slots,"default")],2))}});export{i as default};
