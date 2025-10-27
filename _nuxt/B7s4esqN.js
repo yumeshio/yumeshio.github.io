@@ -1,0 +1,1 @@
+import{y as o,r,c as l,d as t,O as p,P as n,n as c}from"./sZdZc_VC.js";const i=o({__name:"Spoiler",setup(f){const e=r(!1);return(a,s)=>(t(),l("span",{class:c({blur:!n(e)}),onClick:s[0]||(s[0]=m=>e.value=!n(e))},[p(a.$slots,"default")],2))}}),_=Object.assign(i,{__name:"Spoiler"});export{_ as default};
