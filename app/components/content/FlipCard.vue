@@ -25,9 +25,11 @@
 		<div class="absolute inset-0 pointer-events-none opacity-0 -z-10">
 			<div ref="mFront" class="w-full">
 				<slot />
+				<div class="h-0.25 w-full"></div>
 			</div>
 			<div ref="mBack" class="w-full">
 				<slot name="back" />
+				<div class="w-full"></div>
 			</div>
 		</div>
 	</div>
